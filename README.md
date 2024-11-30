@@ -1,2 +1,2 @@
-# stm32-l555-sandbox
+# stm32-l552-sandbox
 Sandbox for my NUCLEO projects
