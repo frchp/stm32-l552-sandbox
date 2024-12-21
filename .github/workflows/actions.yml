@@ -1,0 +1,32 @@
+name: CMake Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+    # Set up CMake
+    - name: Install CMake
+      uses: jwlawson/actions-setup-cmake@v1
+
+    # Configure the project
+    - name: Configure CMake
+      run: cmake -S . -B build
+
+    # Build the project
+    - name: Build with CMake
+      run: cmake --build build --config Release
