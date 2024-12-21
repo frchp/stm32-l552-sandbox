@@ -1,0 +1,124 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="25.0.1">
+  <diagram name="Page-1" id="ArqOE6ofjkgP0MMBviRK">
+    <mxGraphModel dx="1434" dy="746" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9HFbujriLo5Ycom7uT8S-28" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="610" y="660" width="270" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-27" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="610" y="190" width="270" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-1" value="PCB MOTOR" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-2" target="9HFbujriLo5Ycom7uT8S-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-16" value="Usage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9HFbujriLo5Ycom7uT8S-11">
+          <mxGeometry x="0.52" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-2" value="SpeedSensor&lt;br&gt;Responsibility : compute speed in a given time period&lt;div&gt;Interfaces : Start, Stop, Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="200" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="160" y="340" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="220" y="240" />
+              <mxPoint x="220" y="340" />
+              <mxPoint x="160" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-3" value="Counter driver&lt;br&gt;Responsibility : return number of edge or pulses&lt;div&gt;Interfaces : Reset and Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="200" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-4" value="PWM driver&lt;br&gt;Responsibility : drive timer peripheral to create PWM signal (10-50kHz)&lt;div&gt;Interfaces : Set, Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="320" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-5" target="9HFbujriLo5Ycom7uT8S-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-15" value="Usage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9HFbujriLo5Ycom7uT8S-9">
+          <mxGeometry x="0.64" y="-4" relative="1" as="geometry">
+            <mxPoint x="13" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-5" target="9HFbujriLo5Ycom7uT8S-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-14" value="Usage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9HFbujriLo5Ycom7uT8S-10">
+          <mxGeometry x="0.528" y="-2" relative="1" as="geometry">
+            <mxPoint x="-19" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-5" value="MotorController&lt;div&gt;Responsibility : set motor speed based&lt;/div&gt;&lt;div&gt;Interfaces : SetTarget, Start, Stop, SetDirection&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="320" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="210" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-6" value="ADC driver&lt;br&gt;Responsibility : measure signals&lt;div&gt;Interfaces : Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="560" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-7" value="GPIO driver&lt;br&gt;Responsibility : control GPIO&lt;div&gt;Interfaces : Set, Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="440" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-8" target="9HFbujriLo5Ycom7uT8S-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-13" value="Usage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9HFbujriLo5Ycom7uT8S-12">
+          <mxGeometry x="-0.0133" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-8" value="IntensitySensor&lt;br&gt;Responsibility : return current from ADC measurement&lt;div&gt;Interfaces : Get&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="560" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-17" value="UART driver&lt;br&gt;Responsibility : receive/send&lt;div&gt;Interfaces : Send, Receive&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="680" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-4" target="9HFbujriLo5Ycom7uT8S-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="360" />
+              <mxPoint x="240" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1.025;entryY=0.808;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-7" target="9HFbujriLo5Ycom7uT8S-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-22" value="Evaluation board&lt;div&gt;Specs : have a shunt measurement, have a connector for power supply, have pins for PCB motor&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="545" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9HFbujriLo5Ycom7uT8S-23" target="9HFbujriLo5Ycom7uT8S-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-26" value="Usage" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="9HFbujriLo5Ycom7uT8S-25">
+          <mxGeometry x="-0.0133" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-23" value="OrderHandler&lt;br&gt;Responsibility : handle incoming UART frame and decode them&lt;div&gt;Interfaces : Send, Received&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="680" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-29" value="MotorTask" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#82b366;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="690" y="160" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-30" value="MediaTask" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#d6b656;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="700" y="780" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9HFbujriLo5Ycom7uT8S-31" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Orders&lt;/h1&gt;&lt;p&gt;MTR_SET : Set PWM&lt;/p&gt;&lt;p&gt;MTR_START : Start PWM&lt;/p&gt;&lt;p&gt;MTR_DIR : Set direction&lt;/p&gt;&lt;p&gt;MTR_STOP : Stop motor&lt;/p&gt;&lt;p&gt;CURRENT_GET : Get last current measurement&lt;/p&gt;&lt;p&gt;SPEED_GET : Get last speed measurement&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="660" width="360" height="210" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
