@@ -17,4 +17,5 @@ ${PROJ_PATH}/inc
 # vendor
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Core/Include
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Device/ST/STM32L5xx/Include
+${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Inc
 )
