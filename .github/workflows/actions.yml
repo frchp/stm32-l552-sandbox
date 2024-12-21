@@ -17,6 +17,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    - uses: fiam/arm-none-eabi-gcc@v1
+      with:
+        release: '9-2019-q4' # The arm-none-eabi-gcc release to use.
+
     # Set up CMake
     - name: Install CMake
       uses: jwlawson/actions-setup-cmake@v1
