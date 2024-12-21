@@ -13,15 +13,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: lukka/get-cmake@latest
-    
-    - name: Checkout code
+    # Checkout the repository
+    - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: run-cmake
-      uses: lukka/run-cmake@v10.8
-      with:
-        configurePreset: Release
-        buildPreset: Release
+    # Set up CMake
+    - name: Install CMake
+      uses: jwlawson/actions-setup-cmake@v1
 
-              
+    # Configure the project
+    - name: Configure CMake
+      run: cmake -S . -B build
+
+    # Build the project
+    - name: Build with CMake
+      run: cmake --build build --config Release
