@@ -8,6 +8,6 @@ set(CPU_PARAMETERS ${CPU_PARAMETERS}
 )
 
 set(compiler_define ${compiler_define}
-    "USE_HAL_DRIVER"
+    "USE_FULL_LL_DRIVER"
     "STM32L552xx"
 )

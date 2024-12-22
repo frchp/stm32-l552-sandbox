@@ -1,0 +1,7 @@
+#ifndef _TIMER_COUNTER_CONFIG_H_
+#define _TIMER_COUNTER_CONFIG_H_
+
+//! Number of pulses needed to compute speed
+#define TIMER_COUNTER_NB_PULSES @TIMER_COUNTER_NB_PULSES@
+
+#endif // _TIMER_COUNTER_CONFIG_H_

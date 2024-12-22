@@ -12,12 +12,16 @@ FetchContent_Declare(
 )
 FetchContent_makeAvailable(cube-l5)
 
-message("FreeRTOS")
+if(USE_OS)
+message("FreeRTOS fetched")
 FetchContent_Declare(
   freertos-kernel
   GIT_REPOSITORY https://github.com/FreeRTOS/FreeRTOS-Kernel.git
   GIT_TAG V11.1.0
 )
 FetchContent_makeAvailable(freertos-kernel)
+else()
+message("FreeRTOS not fetched")
+endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)

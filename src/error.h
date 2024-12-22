@@ -1,7 +1,7 @@
 #ifndef _ERROR_H_
 #define _ERROR_H_
 
-inline void Error_Handler(void)
+static __inline void Error_Handler(void)
 {
   while(1)
   {

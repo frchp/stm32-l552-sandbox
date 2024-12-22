@@ -5,8 +5,8 @@ Sandbox for my NUCLEO projects
 - [ARM GNU](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 - [CMake](https://cmake.org/download/)
 - [Ninja](https://github.com/ninja-build/ninja/releases)
-- ST Link GDB Server (Copy from CubeIDE Installation).
-- STM32_Programmer_CLI (Copy from CubeIDE Installation)
+- [ST Link](https://www.st.com/en/development-tools/stm32cubeprog.html)
+- [OpenOCD](https://packages.msys2.org/packages/mingw-w64-x86_64-openocd)
 
 ## VS Code Extensions
 
@@ -43,3 +43,9 @@ Each MCU has their own ARM compiler flags. Those are defined in a individual mod
 | STM32WB      | `cortex-m4`     | `fpv4-sp-d16` | `hard`      |
 | STM32WL CM4  | `cortex-m4`     | `Not used`    | `soft`      |
 | STM32WL CM0  | `cortex-m0plus` | `Not used`    | `soft`      |
+
+## Improvements
+- Use OS to handle real time application and separated in separate tasks.
+- Better modularity for BSP drivers. For now, most hard coded.
+- BSP : handle errors in interrupts
+- Low power mode once OS is integrated.

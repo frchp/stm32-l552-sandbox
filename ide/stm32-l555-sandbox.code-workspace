@@ -17,6 +17,7 @@
 			"**/Thumbs.db": true,
 			"**/CMakeFiles/": true,
 			"**/cmake_install.cmake": true
-		}
+		},
+		"cortex-debug.variableUseNaturalFormat": false
 	}
 }
