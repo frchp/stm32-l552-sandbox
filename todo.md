@@ -5,18 +5,16 @@
  [x] main is compiled
 
  [ ] BSP
-- [ ] ADC
-- [ ] Clocks
-- [ ] GPIO
-- [ ] System
+- [x] ADC
+  - [] interrupt DMA handler
+- [x] Clocks
+- [x] System
 - [ ] Timer PWM
 - [ ] Timer Counter
+- [x] Timer System
 - [ ] UART
 - [ ] Watchdog
-
- [ ] OS
-- [ ] Add files to compilation
-- [ ] Create two tasks media and driving
+- [ ] remove unnecessary code
 
  [ ] Application
 - [ ] Direction Controller

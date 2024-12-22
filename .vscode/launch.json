@@ -2,17 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "ST-Link",
+            "name": "Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "${command:cmake.launchTargetPath}",
+            "executable": "${workspaceFolder}/build/stm32-l5-sandbox.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "servertype": "stlink",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink-v2.cfg",
+                "target/stm32l5x.cfg"
+            ],
             "interface": "swd",
-            "showDevDebugOutput": "both",
+            "showDevDebugOutput": "raw",
             "v1": false,                            // ST-Link version
-            "device": "STM32L552ZE",                // MCU used [optional]
-            "serialNumber": "",                     // Set ST-Link ID if you use multiple at the same time [optional]
             "runToEntryPoint": "main",              // Run to main and stop there [optional]
             "svdFile": "debug/STM32L552.svd"    // SVD file to see registers [optional]
         }

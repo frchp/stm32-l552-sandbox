@@ -1,0 +1,7 @@
+#ifndef _ADC_CONFIG_H_
+#define _ADC_CONFIG_H_
+
+//! Number of needed acquisition value
+#define ADC_NB_SIGNALS @ADC_NB_SIGNALS@
+
+#endif // _ADC_CONFIG_H_

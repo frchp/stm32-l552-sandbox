@@ -8,7 +8,8 @@
             "binaryDir": "${sourceDir}/build",
             "toolchainFile": "${sourceDir}/cmake/gcc-arm-none-eabi.cmake",
             "cacheVariables": {
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "USE_OS": "OFF"
             }
         },
         {

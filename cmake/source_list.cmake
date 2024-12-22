@@ -3,7 +3,14 @@ message("source_list.cmake")
 set(source_list ${source_list}
 ${PROJ_PATH}/src/main.c
 ${PROJ_PATH}/src/startup_stm32l552xx.s
+${PROJ_PATH}/src/syscalls.c
+${PROJ_PATH}/src/bsp/adc/adc.c
+${PROJ_PATH}/src/bsp/interrupts/interrupts.c
 ${PROJ_PATH}/src/bsp/system/system.c
+${PROJ_PATH}/src/bsp/timer_counter/timer_counter.c
+${PROJ_PATH}/src/bsp/timer_pwm/timer_pwm.c
+${PROJ_PATH}/src/bsp/uart/uart.c
+${PROJ_PATH}/src/bsp/watchdog/watchdog.c
 # vendor
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c

@@ -1,0 +1,7 @@
+#ifndef _UART_CONFIG_H_
+#define _UART_CONFIG_H_
+
+//! Max size for UART buffers
+#define UART_MAX_SIZE @UART_MAX_SIZE@
+
+#endif // _UART_CONFIG_H_
