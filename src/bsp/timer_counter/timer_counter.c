@@ -94,6 +94,7 @@ static void TimerCounter_PRV_InitDMA(void)
   LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PDATAALIGN_WORD);
   LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MDATAALIGN_WORD);
   LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_2, TIMER_COUNTER_NB_PULSES);
+  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MODE_CIRCULAR);
   LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_2,
                           (uint32_t)&TIM1->CCR1,
                           (uint32_t)gbl_au32PulsesDetected,

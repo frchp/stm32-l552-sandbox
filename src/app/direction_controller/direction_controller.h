@@ -1,6 +1,12 @@
 #ifndef _DIRECTION_CONTROLLER_H_
 #define _DIRECTION_CONTROLLER_H_
 
+typedef enum
+{
+  MTR_DIR_CW,
+  MTR_DIR_CCW
+} MotorDirection_t;
+
 /**
   @brief Setup DirectionController.
  */
