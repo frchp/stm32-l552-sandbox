@@ -4,6 +4,12 @@ set(source_list ${source_list}
 ${PROJ_PATH}/src/main.c
 ${PROJ_PATH}/src/startup_stm32l552xx.s
 ${PROJ_PATH}/src/syscalls.c
+${PROJ_PATH}/src/app/app.c
+${PROJ_PATH}/src/app/direction_controller/direction_controller.c
+${PROJ_PATH}/src/app/intensity_sensor/intensity_sensor.c
+${PROJ_PATH}/src/app/motor_controller/motor_controller.c
+${PROJ_PATH}/src/app/order_handler/order_handler.c
+${PROJ_PATH}/src/app/speed_sensor/speed_sensor.c
 ${PROJ_PATH}/src/bsp/adc/adc.c
 ${PROJ_PATH}/src/bsp/interrupts/interrupts.c
 ${PROJ_PATH}/src/bsp/system/system.c

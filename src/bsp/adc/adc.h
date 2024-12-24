@@ -29,7 +29,7 @@ void Adc_Activate(void);
 /**
   @brief Return last value of acquired signal.
  */
-uint32_t Adc_Get(ADCSignal_t arg_eSignal);
+uint16_t Adc_Get(ADCSignal_t arg_eSignal);
 
 /**
   @brief Notify listeners at end of conversion.

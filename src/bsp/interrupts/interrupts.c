@@ -88,22 +88,6 @@ void DMA1_Channel1_IRQHandler(void)
   }
 }
 
-/**
-* @brief  This function handles TIM1 capture/compare interrupt.
-*/
-void TIM1_CC_IRQHandler(void)
-{
-  /* Check whether CC1 interrupt is pending */
-  if(LL_TIM_IsActiveFlag_CC1(TIM1))
-  {
-    /* Clear the update interrupt flag*/
-    LL_TIM_ClearFlag_CC1(TIM1);
-
-    /* TIM1 capture/compare interrupt processing(function defined in main.c) */
-    TimerCounter_TimeElapsed();
-  }
-}
-
 void LPUART1_IRQHandler(void)
 {
   /* Check RXNE flag value in ISR register */
@@ -118,5 +102,15 @@ void LPUART1_IRQHandler(void)
   {
     /* case Noise Error flag is raised : Clear NF Flag */
     LL_LPUART_ClearFlag_NE(LPUART1);
+  }
+}
+
+void DMA1_Channel2_IRQHandler(void)
+{
+  if (LL_DMA_IsActiveFlag_TC2(DMA1))
+  {
+    LL_DMA_ClearFlag_TC2(DMA1); // Clear transfer complete flag
+
+    TimerCounter_AllPulsesDetected();
   }
 }

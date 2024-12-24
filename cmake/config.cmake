@@ -1,6 +1,6 @@
 message("config.cmake")
 
-set(ADC_NB_SIGNALS 1)
+set(ADC_NB_SIGNALS 2)
 configure_file(${PROJ_PATH}/src/bsp/adc/adc_config.h.in ${CMAKE_BINARY_DIR}/adc_config.h)
 
 set(TIMER_COUNTER_NB_PULSES 10)
