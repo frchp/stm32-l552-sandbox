@@ -34,9 +34,6 @@ include(${CMAKE_MODULE_PATH}/stm32l5xx.cmake)
 # Executable files
 add_executable(${EXECUTABLE} ${source_list})
 
-# Include libraries
-target_link_libraries(${EXECUTABLE} PRIVATE freertos_kernel)
-
 # Include paths
 target_include_directories(${EXECUTABLE} PRIVATE ${include_list})
 
@@ -44,20 +41,23 @@ target_include_directories(${EXECUTABLE} PRIVATE ${include_list})
 target_compile_definitions(${EXECUTABLE} PRIVATE ${compiler_define})
 
 # Compiler options
-target_compile_options(${EXECUTABLE} PRIVATE
+set(COMPILE_OPTIONS_PROJECT ${COMPILE_OPTIONS_PROJECT}
 	${CPU_PARAMETERS}
 	-Wall
 	-Wpedantic
 	-Wno-unused-parameter
 )
 
+target_compile_options(${EXECUTABLE} PRIVATE
+	${COMPILE_OPTIONS_PROJECT}
+)
+
 # Linker options
-target_link_options(${EXECUTABLE} PRIVATE
+set(LINK_OPTIONS_PROJECT ${LINK_OPTIONS_PROJECT}
 	-T${linker_script_SRC}
 	${CPU_PARAMETERS}
 	-Wl,-Map=${CMAKE_PROJECT_NAME}.map
 	--specs=nosys.specs
-	#-u _printf_float                # STDIO float formatting support
 	-Wl,--start-group
 	-lc
 	-lm
@@ -67,6 +67,19 @@ target_link_options(${EXECUTABLE} PRIVATE
 	-Wl,--print-memory-usage
 )
 
+target_link_options(${EXECUTABLE} PRIVATE
+	${LINK_OPTIONS_PROJECT}
+)
+
+# Include libraries
+# Transmit options to FreeRTOS for cross compilation
+target_compile_options(freertos_config INTERFACE
+	${COMPILE_OPTIONS_PROJECT}
+)
+target_link_options(freertos_config INTERFACE
+	${LINK_OPTIONS_PROJECT}
+)
+target_link_libraries(${EXECUTABLE} PRIVATE freertos_kernel)
 
 # Execute post-build to print size
 add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
