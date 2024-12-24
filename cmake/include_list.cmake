@@ -1,6 +1,8 @@
 message("include_list.cmake")
 
 set(include_list ${include_list}
+${PROJ_PATH}/src/app
+${PROJ_PATH}/src/app/direction_controller
 ${PROJ_PATH}/src/app/intensity_sensor
 ${PROJ_PATH}/src/app/motor_controller
 ${PROJ_PATH}/src/app/order_handler

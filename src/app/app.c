@@ -1,9 +1,10 @@
 #include "app.h"
+#include "direction_controller.h"
 
 /**
   @brief Setup the application.
  */
 void App_Init(void)
 {
-  // TODO : Add all application modules init here
+  DirectionController_Init();
 }

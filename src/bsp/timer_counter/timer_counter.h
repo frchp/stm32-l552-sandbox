@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+// Gives buffer and size of buffer
+typedef void (*fpCounterCallback)(uint32_t*, uint8_t);
+
 /**
   @brief Setup the TimerCounter.
  */
@@ -14,14 +17,19 @@ void TimerCounter_Init(void);
 void TimerCounter_Activate(void);
 
 /**
-  @brief Return last value of counted pulses.
+  @brief Return TimerCounter frequency.
  */
-uint32_t TimerCounter_Get(void);
+uint32_t TimerCounter_GetTimerFrequency(void);
 
 /**
-  @brief Period has elapsed, compute count.
+  @brief All pulses are detected, notify listeners.
  */
-void TimerCounter_TimeElapsed(void);
+void TimerCounter_AllPulsesDetected(void);
+
+/**
+  @brief Attach listeners.
+ */
+void TimerCounter_Attach(fpCounterCallback arg_fpListener);
 
 
 #endif // _TIMER_COUNTER_H_

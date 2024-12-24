@@ -7,25 +7,16 @@
 
 //! List the GPIO connexions
 
-// TIM1_CH1
-#define BOARD_GPIO_MTR_CTRL_PORT                          GPIOA
-#define BOARD_GPIO_MTR_CTRL_PIN                           (LL_GPIO_PIN_8)
+// TIM3_CH2
+#define BOARD_GPIO_MTR_CTRL_PORT                          GPIOC
+#define BOARD_GPIO_MTR_CTRL_PIN                           (LL_GPIO_PIN_7)
 
-// TIM2_CH1
+// TIM1_CH1
 #define BOARD_GPIO_MTR_FB_PORT                            GPIOA
-#define BOARD_GPIO_MTR_FB_PIN                             (LL_GPIO_PIN_0)
+#define BOARD_GPIO_MTR_FB_PIN                             (LL_GPIO_PIN_8)
 
 #define BOARD_GPIO_MTR_DIR_PORT                           GPIOA
 #define BOARD_GPIO_MTR_DIR_PIN                            (LL_GPIO_PIN_1)
-
-#define BOARD_GPIO_LED1_GPIO_PORT                         GPIOC
-#define BOARD_GPIO_LED1_PIN                               (LL_GPIO_PIN_7)
-
-#define BOARD_GPIO_LED2_GPIO_PORT                         GPIOB
-#define BOARD_GPIO_LED2_PIN                               (LL_GPIO_PIN_7)
-
-#define BOARD_GPIO_LED3_GPIO_PORT                         GPIOA
-#define BOARD_GPIO_LED3_PIN                               (LL_GPIO_PIN_9)
 
 //! List the ADC connexions
 // ADC1_CH0
