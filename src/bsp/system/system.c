@@ -34,11 +34,7 @@ const SignalConfig_t sAdcSignalConfig[ADC_NB_SIGNALS] =
 {
   {
     BOARD_ADC_MTR_CURRENT_CHANNEL,
-    NULL // TODO replace listener
-  },
-  {
-    LL_ADC_CHANNEL_TEMPSENSOR,
-    NULL // TODO replace listener
+    NULL
   }
 };
 

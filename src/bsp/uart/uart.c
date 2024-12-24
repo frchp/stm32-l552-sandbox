@@ -135,7 +135,7 @@ void Uart_TxComplete(void)
 void Uart_RxByteComplete(void)
 {
   gbl_au8RxBuffer[gbl_u8RxPosition] = LL_LPUART_ReceiveData8(LPUART1);
-  if(gbl_au8RxBuffer[gbl_u8RxPosition] == '\r')
+  if(gbl_au8RxBuffer[gbl_u8RxPosition] == UART_END_OF_MSG_CHAR)
   {
     if(gbl_fpRxListener != NULL)
     {
