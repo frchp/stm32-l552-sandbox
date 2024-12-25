@@ -18,6 +18,12 @@ Sandbox for my NUCLEO projects
 - Memory View
 - RTOS Views
 
+## How to build
+ - Have ninja.exe path in your PATH, CMake installed, gcc-arm-none-eabi installed
+ - Configure 
+```cmake --preset Debug/Release```
+ - Build
+```cmake --build build```
 
 ## MCU specific file
 

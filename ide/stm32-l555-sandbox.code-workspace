@@ -18,6 +18,9 @@
 			"**/CMakeFiles/": true,
 			"**/cmake_install.cmake": true
 		},
-		"cortex-debug.variableUseNaturalFormat": false
+		"cortex-debug.variableUseNaturalFormat": false,
+		"files.associations": {
+			"motor_task.h": "c"
+		}
 	}
 }

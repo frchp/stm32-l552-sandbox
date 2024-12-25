@@ -1,3 +1,9 @@
+#include <assert.h>
+#include <stdbool.h>
+
+#include "interrupts.h"
+#include "interrupts_config.h"
+
 #include "stm32l5xx_ll_dma.h"
 #include "stm32l5xx_ll_tim.h"
 #include "stm32l5xx_ll_adc.h"
@@ -10,10 +16,28 @@
 #include "uart.h"
 
 /**
-  * @brief This function handles System tick timer.
-  */
-void SysTick_Handler(void)
+  @brief Setup given interrupt via NVIC.
+ */
+void Interrupts_Enable(Interrupts_Desc_t arg_eInterrupt)
 {
+  bool loc_bCfgFound = false;
+  Interrupts_Config_t loc_sPeripheralCfg;
+  assert(arg_eInterrupt < INT_MAX);
+
+  for(uint8_t loc_u8Idx = 0u; (loc_u8Idx < NB_INTERRUPTS_USED) && (loc_bCfgFound == false); loc_u8Idx++)
+  {
+    if(gbl_InterruptsArray[loc_u8Idx].ApplicationName == arg_eInterrupt)
+    {
+      loc_bCfgFound = true;
+      loc_sPeripheralCfg = gbl_InterruptsArray[loc_u8Idx];
+    }
+  };
+
+  if(loc_bCfgFound == true)
+  {
+    NVIC_SetPriority(loc_sPeripheralCfg.NVIC_IRQ, loc_sPeripheralCfg.Priority);
+    NVIC_EnableIRQ(loc_sPeripheralCfg.NVIC_IRQ);
+  }
 }
 
 /**

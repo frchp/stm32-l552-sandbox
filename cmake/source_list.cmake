@@ -17,8 +17,11 @@ ${PROJ_PATH}/src/bsp/timer_counter/timer_counter.c
 ${PROJ_PATH}/src/bsp/timer_pwm/timer_pwm.c
 ${PROJ_PATH}/src/bsp/uart/uart.c
 ${PROJ_PATH}/src/bsp/watchdog/watchdog.c
+# tasks
+${PROJ_PATH}/src/tasks/task_handler.c
+${PROJ_PATH}/src/tasks/media/media_task.c
+${PROJ_PATH}/src/tasks/motor/motor_task.c
 # vendor
-${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_comp.c
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_crc.c

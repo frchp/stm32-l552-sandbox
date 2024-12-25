@@ -9,6 +9,7 @@ ${PROJ_PATH}/src/app/order_handler
 ${PROJ_PATH}/src/app/speed_sensor
 ${PROJ_PATH}/src/bsp
 ${PROJ_PATH}/src/bsp/adc
+${PROJ_PATH}/src/bsp/interrupts
 ${PROJ_PATH}/src/bsp/system
 ${PROJ_PATH}/src/bsp/timer_counter
 ${PROJ_PATH}/src/bsp/timer_pwm
@@ -17,6 +18,10 @@ ${PROJ_PATH}/src/bsp/watchdog
 ${PROJ_PATH}/src/tasks
 ${PROJ_PATH}/src
 ${PROJ_PATH}/inc
+# tasks
+${PROJ_PATH}/src/tasks
+${PROJ_PATH}/src/tasks/media
+${PROJ_PATH}/src/tasks/motor
 # vendor
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Core/Include
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Device/ST/STM32L5xx/Include
