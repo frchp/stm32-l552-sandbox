@@ -3,6 +3,8 @@
 #include "timer_counter.h"
 #include "timer_counter_config.h"
 
+#include "interrupts.h"
+
 #include "stm32l5xx_ll_tim.h"
 #include "stm32l5xx_ll_bus.h"
 #include "stm32l5xx_ll_dma.h"
@@ -107,6 +109,5 @@ static void TimerCounter_PRV_InitDMA(void)
   LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_2);
 
   // Configure NVIC for DMA1_Channel2 interrupts
-  NVIC_SetPriority(DMA1_Channel2_IRQn, 0);
-  NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+  Interrupts_Enable(INT_DMA_CH2);
 }

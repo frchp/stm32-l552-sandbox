@@ -21,8 +21,8 @@
 /* Hook function definitions */
 #define configUSE_IDLE_HOOK                   0                 // No idle hook
 #define configUSE_TICK_HOOK                   0                 // No tick hook
-#define configCHECK_FOR_STACK_OVERFLOW        1                 // Enable stack overflow checking
-#define configUSE_MALLOC_FAILED_HOOK          1                 // Enable malloc failed hook
+#define configCHECK_FOR_STACK_OVERFLOW        0                 // Enable stack overflow checking
+#define configUSE_MALLOC_FAILED_HOOK          0                 // Enable malloc failed hook
 
 /* Software timer definitions */
 #define configUSE_TIMERS                      1                 // Enable software timers

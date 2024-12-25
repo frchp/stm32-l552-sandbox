@@ -4,6 +4,7 @@
 #include "system.h"
 #include "watchdog.h"
 #include "app.h"
+#include "task_handler.h"
 
 int main(void)
 {
@@ -11,6 +12,8 @@ int main(void)
   Bsp_Activate();
 
   App_Init();
+
+  TaskHandler_Init();
 
   while(1)
   {

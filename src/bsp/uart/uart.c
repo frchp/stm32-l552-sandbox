@@ -12,6 +12,7 @@
 #include "uart_config.h"
 
 #include "cpu_delay.h"
+#include "interrupts.h"
 
 #define UART_DELAY_REG_US (200u)
 
@@ -49,8 +50,7 @@ void Uart_Init(void)
   GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
   LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-  NVIC_SetPriority(LPUART1_IRQn, 0);
-  NVIC_EnableIRQ(LPUART1_IRQn);
+  Interrupts_Enable(INT_UART);
 
   LPUART_InitStruct.PrescalerValue = LL_LPUART_PRESCALER_DIV1;
   LPUART_InitStruct.BaudRate = 115200;

@@ -6,6 +6,7 @@
 
 #include "cpu_delay.h"
 #include "error.h"
+#include "interrupts.h"
 
 #include "stm32l5xx_ll_dma.h"
 #include "stm32l5xx_ll_tim.h"
@@ -55,8 +56,7 @@ void Adc_Init(const SignalConfig_t* arg_psSignal)
 
   Adc_PRV_InitDMA();
 
-  NVIC_SetPriority(ADC1_2_IRQn, 0);
-  NVIC_EnableIRQ(ADC1_2_IRQn);
+  Interrupts_Enable(INT_ADC);
 
   // Configure ADC1
   LL_ADC_SetResolution(ADC1, LL_ADC_RESOLUTION_12B);
@@ -185,8 +185,7 @@ static void Adc_PRV_InitDMA(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMAMUX1);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
 
-  NVIC_SetPriority(DMA1_Channel1_IRQn, 0);
-  NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  Interrupts_Enable(INT_DMA_CH1);
 
   LL_DMA_SetPeriphRequest(DMA1, LL_DMA_CHANNEL_1, LL_DMAMUX_REQ_ADC1);
   LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_1, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
