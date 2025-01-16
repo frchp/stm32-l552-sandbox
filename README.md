@@ -1,6 +1,8 @@
 # stm32-l552-sandbox
 Sandbox for my NUCLEO projects
 
+![Build status](https://github.com/frchp/stm32-l552-sandbox/actions/workflows/actions.yml/badge.svg)
+
 ## Toolchain
 - [ARM GNU](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads)
 - [CMake](https://cmake.org/download/)
