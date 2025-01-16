@@ -47,7 +47,8 @@ Each MCU has their own ARM compiler flags. Those are defined in a individual mod
 | STM32WL CM0  | `cortex-m0plus` | `Not used`    | `soft`      |
 
 ## Improvements
-- Use OS to handle real time application and separated in separate tasks.
-- Better modularity for BSP drivers. For now, most hard coded.
-- BSP : handle errors in interrupts
-- Low power mode once OS is integrated.
+- OS : Use OS to handle real time application and separate tasks.
+- BSP : Prevent double init of modules : via state or boolean.
+- BSP : handle errors in interrupts.
+- BSP : interrupts gives flags to application, no check done in interrupts, just the get, notify and clear of flags.
+- OS : Low power mode once OS is integrated.
