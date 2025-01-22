@@ -77,12 +77,12 @@ void Idle_OnPreSleepProcessing(uint32_t xExpectedTime)
     // TODO : Setup EXTI line
   #endif
 
-  // 2. Enter sleep
+  // 2. Choose mode
   #if (LPM_MODE == LPM_MODE_SLEEP)
     LL_LPM_EnableSleep();
   #elif (LPM_MODE == LPM_MODE_LP_SLEEP)
-  LL_LPM_EnableSleep();
-  LL_PWR_EnableLowPowerRunMode();
+    LL_LPM_EnableSleep();
+    LL_PWR_EnableLowPowerRunMode();
   #elif (LPM_MODE == LPM_MODE_STOP)
     LL_PWR_SetPowerMode(LL_PWR_MODE_STOP1);
     LL_LPM_EnableDeepSleep();
