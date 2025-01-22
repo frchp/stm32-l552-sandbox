@@ -47,9 +47,6 @@ const SignalConfig_t sAdcSignalConfig[ADC_NB_SIGNALS] =
 #define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
 
-// Setup clock tree, power at application start
-void system_PRV_Startup(void);
-
 void system_PRV_InitGpio(void);
 
 /**
@@ -139,7 +136,7 @@ void SystemCoreClockUpdate(void)
  */
 void Bsp_Init (void)
 {
-  system_PRV_Startup();
+  Bsp_InitClock();
 
   system_PRV_InitGpio();
 
@@ -161,8 +158,10 @@ void Bsp_Activate (void)
   Watchdog_Activate(); // Last to be activated, to not trigger reset during Init
 }
 
-// Setup clock tree, power at application start
-void system_PRV_Startup(void)
+/**
+  @brief Setup the clock tree.
+ */
+void Bsp_InitClock(void)
 {
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);

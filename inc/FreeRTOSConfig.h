@@ -2,6 +2,7 @@
 #define FREERTOS_CONFIG_H
 
 #include "stm32l552xx.h" // Include STM32-specific header for clock speed
+#include "idle_task.h" // Include idle task to have pre and post idle processing functions
 
 /*-----------------------------------------------------------
  * FreeRTOS Kernel Configuration
@@ -19,7 +20,7 @@
 #define configIDLE_SHOULD_YIELD               1                 // Idle task yields CPU time
 
 /* Hook function definitions */
-#define configUSE_IDLE_HOOK                   1                 // No idle hook
+#define configUSE_IDLE_HOOK                   1                 // Idle hook
 #define configUSE_TICK_HOOK                   0                 // No tick hook
 #define configCHECK_FOR_STACK_OVERFLOW        0                 // Enable stack overflow checking
 #define configUSE_MALLOC_FAILED_HOOK          0                 // Enable malloc failed hook
@@ -59,6 +60,11 @@
 
 /* Idle */
 #define configUSE_TICKLESS_IDLE               1                 // 1 to enable, 2 to create specific port
+#define configPRE_SLEEP_PROCESSING(xExpectedTime)            Idle_OnPreSleepProcessing(xExpectedTime)
+#define configPOST_SLEEP_PROCESSING(xExpectedTime)           Idle_OnPostSleepProcessing(xExpectedTime)
+#if (configUSE_TICKLESS_IDLE == 2u)
+  #define portSUPPRESS_TICKS_AND_SLEEP(xExpectedTime)        Idle_TicklessIdleSleep(xExpectedTime)
+#endif
 
 /*-----------------------------------------------------------
  * Optional functions

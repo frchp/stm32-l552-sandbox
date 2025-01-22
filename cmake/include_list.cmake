@@ -20,6 +20,7 @@ ${PROJ_PATH}/src
 ${PROJ_PATH}/inc
 # tasks
 ${PROJ_PATH}/src/tasks
+${PROJ_PATH}/src/tasks/idle
 ${PROJ_PATH}/src/tasks/media
 ${PROJ_PATH}/src/tasks/motor
 ${PROJ_PATH}/src/tasks/watchdog

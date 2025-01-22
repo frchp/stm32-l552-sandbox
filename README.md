@@ -52,9 +52,14 @@ Each MCU has their own ARM compiler flags. Those are defined in a individual mod
 | STM32WL CM4  | `cortex-m4`     | `Not used`    | `soft`      |
 | STM32WL CM0  | `cortex-m0plus` | `Not used`    | `soft`      |
 
-## Improvements
-- OS : Use OS to handle real time application and separate tasks.
-- BSP : Prevent double init of modules : via state or boolean.
-- BSP : handle errors in interrupts.
-- BSP : interrupts gives flags to application, no check done in interrupts, just the get, notify and clear of flags.
-- OS : Low power mode once OS is integrated.
+## Improvements (by order of priority)
+ - OS : Use OS to handle real time application and separate tasks.
+ - OS : Low power mode once OS is integrated.
+ - BSP : Prevent double init of modules : via state or boolean.
+ - BSP : handle errors in interrupts, handle error returned.
+ - BSP : interrupts gives flags to application, no check done in interrupts, just the get, notify and clear of flags.
+ - BSP : create own LL instead of vendor ?
+
+## Documentation
+ - [FreeRTOS and Low power](https://www.freertos.org/low-power-ARM-cortex-rtos)
+ - [Optimizing low power](https://mcuoneclipse.com/2024/05/22/low-power-optimization-techniques-for-arm-cortex-m0-microcontrollers/)
