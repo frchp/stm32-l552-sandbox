@@ -9,7 +9,7 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "interface/stlink-v2.cfg",
+                "interface/stlink.cfg",
                 "target/stm32l5x.cfg"
             ],
             "interface": "swd",
