@@ -22,6 +22,7 @@ ${PROJ_PATH}/inc
 ${PROJ_PATH}/src/tasks
 ${PROJ_PATH}/src/tasks/media
 ${PROJ_PATH}/src/tasks/motor
+${PROJ_PATH}/src/tasks/watchdog
 # vendor
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Core/Include
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Device/ST/STM32L5xx/Include
