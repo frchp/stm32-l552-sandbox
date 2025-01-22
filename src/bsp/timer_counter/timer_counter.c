@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "timer_counter.h"
 #include "timer_counter_config.h"
@@ -21,28 +22,33 @@ static void TimerCounter_PRV_InitDMA(void);
  */
 void TimerCounter_Init(void)
 {
-  // Init DMA transfer from TIM1 to saved pulses values
-  TimerCounter_PRV_InitDMA();
+  static bool bInitialized = false;
+  if(!bInitialized)
+  {
+    bInitialized = true;
+    // Init DMA transfer from TIM1 to saved pulses values
+    TimerCounter_PRV_InitDMA();
 
-  // Enable clock
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
+    // Enable clock
+    LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_TIM1);
 
-  // Set TIM1 prescaler to create a time base
-  LL_TIM_SetPrescaler(TIM1, __LL_TIM_CALC_PSC(SystemCoreClock, TIM_COUNTER_FREQ_HZ));
-  LL_TIM_SetCounterMode(TIM1, LL_TIM_COUNTERMODE_UP);
-  LL_TIM_EnableARRPreload(TIM1);
-  LL_TIM_SetAutoReload(TIM1, 0xFFFFFFFF); // Maximum ARR for extended timing
+    // Set TIM1 prescaler to create a time base
+    LL_TIM_SetPrescaler(TIM1, __LL_TIM_CALC_PSC(SystemCoreClock, TIM_COUNTER_FREQ_HZ));
+    LL_TIM_SetCounterMode(TIM1, LL_TIM_COUNTERMODE_UP);
+    LL_TIM_EnableARRPreload(TIM1);
+    LL_TIM_SetAutoReload(TIM1, 0xFFFFFFFF); // Maximum ARR for extended timing
 
-  // Configure TIM1 Channel 1 in input capture mode
-  LL_TIM_IC_SetActiveInput(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
-  LL_TIM_IC_SetPrescaler(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
-  LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
-  LL_TIM_IC_SetPolarity(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);  LL_TIM_EnableIT_CC1(TIM1);
-  
-  // Enable DMA request on TIM1_CH1 capture, no need for interrupt
-  LL_TIM_EnableDMAReq_CC1(TIM1);
-  
-  LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+    // Configure TIM1 Channel 1 in input capture mode
+    LL_TIM_IC_SetActiveInput(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ACTIVEINPUT_DIRECTTI);
+    LL_TIM_IC_SetPrescaler(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
+    LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
+    LL_TIM_IC_SetPolarity(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);  LL_TIM_EnableIT_CC1(TIM1);
+    
+    // Enable DMA request on TIM1_CH1 capture, no need for interrupt
+    LL_TIM_EnableDMAReq_CC1(TIM1);
+    
+    LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+  }
 }
 
 /**
