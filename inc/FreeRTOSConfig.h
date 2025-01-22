@@ -19,7 +19,7 @@
 #define configIDLE_SHOULD_YIELD               1                 // Idle task yields CPU time
 
 /* Hook function definitions */
-#define configUSE_IDLE_HOOK                   0                 // No idle hook
+#define configUSE_IDLE_HOOK                   1                 // No idle hook
 #define configUSE_TICK_HOOK                   0                 // No tick hook
 #define configCHECK_FOR_STACK_OVERFLOW        0                 // Enable stack overflow checking
 #define configUSE_MALLOC_FAILED_HOOK          0                 // Enable malloc failed hook
@@ -56,6 +56,9 @@
 
 /* Define to trap errors during development */
 #define configASSERT(x) if ((x) == 0) { taskDISABLE_INTERRUPTS(); for(;;); }
+
+/* Idle */
+#define configUSE_TICKLESS_IDLE               1                 // 1 to enable, 2 to create specific port
 
 /*-----------------------------------------------------------
  * Optional functions

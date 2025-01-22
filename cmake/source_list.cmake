@@ -19,6 +19,7 @@ ${PROJ_PATH}/src/bsp/uart/uart.c
 ${PROJ_PATH}/src/bsp/watchdog/watchdog.c
 # tasks
 ${PROJ_PATH}/src/tasks/task_handler.c
+${PROJ_PATH}/src/tasks/idle/idle_task.c
 ${PROJ_PATH}/src/tasks/media/media_task.c
 ${PROJ_PATH}/src/tasks/motor/motor_task.c
 # vendor
