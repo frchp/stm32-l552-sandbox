@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <assert.h>
+#include <stdbool.h>
 
 #include "adc.h"
 #include "adc_config.h"
@@ -50,43 +51,49 @@ static void Adc_PRV_InitSamplingTimer(void);
  */
 void Adc_Init(const SignalConfig_t* arg_psSignal)
 {
-  LL_RCC_SetADCClockSource(LL_RCC_ADC_CLKSOURCE_SYSCLK);
-
-  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_ADC);
-
-  Adc_PRV_InitDMA();
-
-  Interrupts_Enable(INT_ADC);
-
-  // Configure ADC1
-  LL_ADC_SetResolution(ADC1, LL_ADC_RESOLUTION_12B);
-  LL_ADC_SetDataAlignment(ADC1, LL_ADC_DATA_ALIGN_RIGHT);
-  LL_ADC_SetLowPowerMode(ADC1, LL_ADC_LP_MODE_NONE);
-
-  // Configure ADC1 external trigger source and polarity
-  LL_ADC_REG_SetTriggerSource(ADC1, LL_ADC_REG_TRIG_EXT_TIM2_TRGO);
-  LL_ADC_REG_SetTriggerEdge(ADC1, LL_ADC_REG_TRIG_EXT_RISING);
-
-  // Enable continuous mode and DMA
-  LL_ADC_REG_SetContinuousMode(ADC1, LL_ADC_REG_CONV_SINGLE);
-  LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_UNLIMITED);
-
-  LL_ADC_DisableDeepPowerDown(ADC1);
-  LL_ADC_EnableInternalRegulator(ADC1);
-
-  assert(ADC_NB_SIGNALS < ADC_NB_RANKS);
-  for(uint8_t loc_u8idx = 0u; loc_u8idx < ADC_NB_SIGNALS; loc_u8idx++)
+  static bool bInitialized = false;
+  if(!bInitialized)
   {
-    LL_ADC_REG_SetSequencerRanks(ADC1, gbl_cau32AdcRankCfg[loc_u8idx], arg_psSignal[loc_u8idx].Channel);
-    LL_ADC_SetChannelSamplingTime(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SAMPLINGTIME_47CYCLES_5);
-    LL_ADC_SetChannelSingleDiff(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SINGLE_ENDED);
+    bInitialized = true;
 
-    gbl_asAdcSignals[loc_u8idx] = arg_psSignal[loc_u8idx];
+    LL_RCC_SetADCClockSource(LL_RCC_ADC_CLKSOURCE_SYSCLK);
+
+    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_ADC);
+
+    Adc_PRV_InitDMA();
+
+    Interrupts_Enable(INT_ADC);
+
+    // Configure ADC1
+    LL_ADC_SetResolution(ADC1, LL_ADC_RESOLUTION_12B);
+    LL_ADC_SetDataAlignment(ADC1, LL_ADC_DATA_ALIGN_RIGHT);
+    LL_ADC_SetLowPowerMode(ADC1, LL_ADC_LP_MODE_NONE);
+
+    // Configure ADC1 external trigger source and polarity
+    LL_ADC_REG_SetTriggerSource(ADC1, LL_ADC_REG_TRIG_EXT_TIM2_TRGO);
+    LL_ADC_REG_SetTriggerEdge(ADC1, LL_ADC_REG_TRIG_EXT_RISING);
+
+    // Enable continuous mode and DMA
+    LL_ADC_REG_SetContinuousMode(ADC1, LL_ADC_REG_CONV_SINGLE);
+    LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_UNLIMITED);
+
+    LL_ADC_DisableDeepPowerDown(ADC1);
+    LL_ADC_EnableInternalRegulator(ADC1);
+
+    assert(ADC_NB_SIGNALS < ADC_NB_RANKS);
+    for(uint8_t loc_u8idx = 0u; loc_u8idx < ADC_NB_SIGNALS; loc_u8idx++)
+    {
+      LL_ADC_REG_SetSequencerRanks(ADC1, gbl_cau32AdcRankCfg[loc_u8idx], arg_psSignal[loc_u8idx].Channel);
+      LL_ADC_SetChannelSamplingTime(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SAMPLINGTIME_47CYCLES_5);
+      LL_ADC_SetChannelSingleDiff(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SINGLE_ENDED);
+
+      gbl_asAdcSignals[loc_u8idx] = arg_psSignal[loc_u8idx];
+    }
+
+    LL_ADC_EnableIT_OVR(ADC1);
+
+    Adc_PRV_InitSamplingTimer();
   }
-
-  LL_ADC_EnableIT_OVR(ADC1);
-
-  Adc_PRV_InitSamplingTimer();
 }
 
 /**
