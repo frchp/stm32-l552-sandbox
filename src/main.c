@@ -14,9 +14,7 @@ int main(void)
   App_Init();
 
   TaskHandler_Init();
+  TaskHandler_StartOS();
 
-  while(1)
-  {
-    Watchdog_Refresh();
-  }
+  /* OS is started now, we should not be here */
 }
