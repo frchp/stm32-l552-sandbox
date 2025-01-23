@@ -4,6 +4,4 @@
 //! Max size for UART buffers
 #define UART_MAX_SIZE @UART_MAX_SIZE@
 
-#define UART_END_OF_MSG_CHAR (0xD)
-
 #endif // _UART_CONFIG_H_

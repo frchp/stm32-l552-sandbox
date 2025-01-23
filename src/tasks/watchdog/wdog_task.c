@@ -9,12 +9,12 @@ StaticTask_t gbl_sTCBWdog;
 
 void WatchdogTask(void *arg_pvParameters)
 {
-    (void)arg_pvParameters; // Avoid compiler warning for unused parameter
+  (void)arg_pvParameters; // Avoid compiler warning for unused parameter
 
-    for (;;)
-    {
-        // Block for 1000 ms and refresh watchdog
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        Watchdog_Refresh();
-    }
+  for (;;)
+  {
+    // Block for 200 ms and refresh watchdog
+    vTaskDelay(pdMS_TO_TICKS(200));
+    Watchdog_Refresh();
+  }
 }

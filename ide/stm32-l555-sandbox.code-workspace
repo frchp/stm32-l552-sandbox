@@ -18,14 +18,18 @@
 			"**/CMakeFiles/": true,
 			"**/cmake_install.cmake": true
 		},
-		"cortex-debug.variableUseNaturalFormat": false,
+		"cortex-debug.variableUseNaturalFormat": true,
 		"files.associations": {
 			"motor_task.h": "c",
 			"*.in": "cpp",
 			"initializer_list": "c",
 			"utility": "c",
 			"xutility": "c",
-			"xmemory": "c"
+			"xmemory": "c",
+			"cstddef": "c",
+			"type_traits": "c",
+			"algorithm": "c",
+			"limits": "c"
 		}
 	}
 }

@@ -10,6 +10,7 @@ typedef enum
   INT_TIMER_PWM,
   INT_UART,
   INT_WDOG,
+  INT_LPTIM,
   INT_MAX
 } Interrupts_Desc_t;
 

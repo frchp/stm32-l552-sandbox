@@ -6,216 +6,177 @@
 
 #include "stm32l5xx_ll_pwr.h"
 #include "stm32l5xx_ll_cortex.h"
-#include "stm32l5xx_ll_rtc.h"
+#include "stm32l5xx_ll_lptim.h"
 #include "stm32l5xx_ll_rcc.h"
+#include "stm32l5xx_ll_bus.h"
 #include "core_cm33.h"
 
+#include "interrupts.h"
 #include "system.h"
 
-/* LPM_VARIANT : 
-* 1 - use FreeRTOS standard
-* 2 - just WFI
-* 3 - application LPM
-*/
-#define LPM_VARIANT (3u)
+/**
+ * LPM_MODE_SLEEP     CPU clock OFF, WFI
+ * LPM_MODE_LP_SLEEP  CPU clock OFF, Set LPR bit - WFI - Return from ISR
+ * LPM_MODE_STOP      All clocks OFF except LSI and LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset
+ * LPM_MODE_STANDBY   All clocks OFF except LSI and LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset
+ * LPM_MODE_SHUTDOWN  All clocks OFF except LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset
+ */
 
-#define LPM_MODE_SLEEP     1  /* CPU clock OFF, WFI */
-#define LPM_MODE_LP_SLEEP  2  /* CPU clock OFF, Set LPR bit - WFI - Return from ISR */
-#define LPM_MODE_STOP      3  /* All clocks OFF except LSI and LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset */
-#define LPM_MODE_STANDBY   4  /* All clocks OFF except LSI and LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset */
-#define LPM_MODE_SHUTDOWN  5  /* All clocks OFF except LSE, Reg + WFI + Int, wake up pin - RTC - ext reset - wdog reset */
+/**
+ * FreeRTOS idle :
+ * 1. Use idle hook : own LPM implementation, check LPM bitfield to enable entry in LPM
+ * enter/exit LPM functions, call for WFI/WFE, load timer to sleep, disable systick, adjust tick count on exit
+ * 2. Use FreeRTOS tickless idle : configUSE_TICKLESS_IDLE = 1 : nothing to do
+ * 3. Use User tickless idle : configUSE_TICKLESS_IDLE > 1 : similar to idle hook except idle hook can wake up on next tick
+ */
 
-#define LPM_MODE LPM_MODE_LP_SLEEP
+#if (configUSE_TICKLESS_IDLE == 2)
 
-#define LPM_WAKEUP_WFI      1
-#define LPM_WAKEUP_WFE      2
-#define LPM_WAKEUP LPM_WAKEUP_WFI
+static uint32_t gbl_u32LPTIMCountsPerTick = 0u;
 
-#define LPM_RTC_FREQUENCY (32768ul)
-#define LPM_TICK_RATE_HZ  (1000ul)
+// Peripheral selection
+#define LPTIM_CLOCK_HZ     ( 32000u )
+#define LPTIM_MAX_ARR      (0xFFFFu)
 
-static void Idle_PRV_SetupRTC(void);
-
-/*
-* @brief Implements IDLE hook from FreeRTOS.
-*/
-void vApplicationIdleHook(void)
-{
-  #if (configUSE_TICKLESS_IDLE == 0u)
-    #if (LPM_VARIANT == 1u)
-      // Nothing
-    #elif (LPM_VARIANT == 2u)
-      __asm volatile("wfi");
-    #elif (LPM_VARIANT == 3u)
-      Idle_PRV_EnterLPM();
-    #endif
-  #endif // (configUSE_TICKLESS_IDLE == 0u)
-}
-
-/*
-* @brief Is called by FreeRTOS before entering sleep.
-*/
-void Idle_OnPreSleepProcessing(uint32_t xExpectedTime)
-{
-  // 1. Prepare
-  #if (LPM_MODE == LPM_MODE_STANDBY) || (LPM_MODE == LPM_MODE_SHUTDOWN)
-    // Can be wakeup timer or wakeup pin : (here PC13)
-    LL_PWR_DisableWakeUpPin(LL_PWR_WAKEUP_PIN2);
-    LL_PWR_ClearFlag_WU();
-    LL_PWR_SetWakeUpPinPolarityLow(LL_PWR_WAKEUP_PIN2);
-    LL_PWR_EnableWakeUpPin(LL_PWR_WAKEUP_PIN2);
-    LL_PWR_ClearFlag_WU();
-  #endif
-
-  #if (LPM_MODE == LPM_MODE_STOP)
-    // TODO : Setup EXTI line
-  #endif
-
-  // 2. Choose mode
-  #if (LPM_MODE == LPM_MODE_SLEEP)
-    LL_LPM_EnableSleep();
-  #elif (LPM_MODE == LPM_MODE_LP_SLEEP)
-    LL_LPM_EnableSleep();
-    LL_PWR_EnableLowPowerRunMode();
-  #elif (LPM_MODE == LPM_MODE_STOP)
-    LL_PWR_SetPowerMode(LL_PWR_MODE_STOP1);
-    LL_LPM_EnableDeepSleep();
-  #elif (LPM_MODE == LPM_MODE_STANDBY)
-    LL_PWR_SetPowerMode(LL_PWR_MODE_STANDBY);
-    LL_PWR_SetSRAM2Retention(LL_PWR_SRAM2_NO_RETENTION);
-    LL_LPM_EnableDeepSleep();
-  #elif (LPM_MODE == LPM_MODE_SHUTDOWN)
-    LL_PWR_SetPowerMode(LL_PWR_MODE_SHUTDOWN);
-    LL_LPM_EnableDeepSleep();
-  #endif
-}
-
-/*
-* @brief Is called by FreeRTOS after entering sleep.
-*/
-void Idle_OnPostSleepProcessing(uint32_t xExpectedTime)
-{
-  // 3. Restore
-  LL_PWR_DisableLowPowerRunMode(); // Disable in any case
-  Bsp_InitClock();
-}
+static void Idle_PRV_SetupLPTIM(void);
 
 /*
 * @brief Is called by FreeRTOS during Idle if user defined tickless idle should be implemented.
 */
-void Idle_TicklessIdleSleep(uint32_t xExpectedTime)
+void vPortSuppressTicksAndSleep(uint32_t xExpectedIdleTime)
 {
-  static bool loc_bFirstSleep = true;  // Set to true for first time called
-  uint32_t loc_u32ReloadValue;
-  uint32_t loc_u32InterruptValues;
+  uint32_t loc_u32LPTIMCurrentCount, loc_u32SleepTime, loc_u32WakeupTime;
+  static bool loc_bInit = false;
 
-  if(loc_bFirstSleep == true)
+  if(!loc_bInit)
   {
-    loc_bFirstSleep = false;
-    Idle_PRV_SetupRTC();
+    loc_bInit = true;
+
+    // Enter STOP1 mode (lowest power while retaining RAM/Peripherals)
+    LL_PWR_SetPowerMode(LL_PWR_MODE_STOP1);
+    LL_LPM_EnableDeepSleep();
+
+    Idle_PRV_SetupLPTIM();
   }
 
+  /* Enter a critical section but don't use the taskENTER_CRITICAL()
+    * method as that will mask interrupts that should exit sleep mode. */
+  __asm volatile( "cpsid i" ::: "memory" );
+  __asm volatile( "dsb" );
+  __asm volatile( "isb" );
 
-  // Calculate the reload value based on expected idle time
-  loc_u32ReloadValue = xExpectedTime * (LPM_RTC_FREQUENCY / LPM_TICK_RATE_HZ);
-
-  eSleepModeStatus eSleepStatus = eTaskConfirmSleepModeStatus();
-  if( eSleepStatus == eAbortSleep )
+  if (eTaskConfirmSleepModeStatus() == eAbortSleep)
   {
-    /* A task has been moved out of the Blocked state since this macro was
-      executed, or a context switch is being held pending. Do not enter a
-      sleep state. Restart the tick and exit the critical section. */
+    __asm volatile( "cpsie i" ::: "memory" );
+    return;
   }
-  else
+
+  // Disable SysTick to prevent it from firing during sleep
+  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+
+  // Calculate sleep time in LPTIM ticks
+  loc_u32SleepTime = xExpectedIdleTime * gbl_u32LPTIMCountsPerTick;
+  if (loc_u32SleepTime > LPTIM_MAX_ARR)
   {
-    // Disable SysTick
-    SysTick->CTRL &= !SysTick_CTRL_ENABLE_Msk;
-    LL_SYSTICK_DisableIT();
-
-    // Disable interrupts (critical section)
-    loc_u32InterruptValues = Bsp_EnterCritical();
-
-    if( eSleepStatus == eNoTasksWaitingTimeout )
-    {
-      // Enter low-power STOP mode
-      LL_PWR_SetPowerMode(LL_PWR_MODE_STOP1);
-      LL_LPM_EnableDeepSleep();
-      #if (LPM_WAKEUP == LPM_WAKEUP_WFI)
-        __asm volatile("wfi");
-      #elif (LPM_WAKEUP == LPM_WAKEUP_WFE)
-        __asm volatile("wfe");
-      #else
-        #error "LPM_WAKEUP not defined"
-      #endif
-    }
-    else
-    {
-      // Disable RTC Alarm A interrupt while configuring the alarm
-      LL_RTC_DisableIT_ALRA(RTC);
-
-      // Set the alarm for the calculated number of seconds
-      LL_RTC_ALMA_SetSecond(RTC, (uint8_t)(loc_u32ReloadValue % 60));
-      LL_RTC_ALMA_SetMinute(RTC, (uint8_t)((loc_u32ReloadValue / 60) % 60));
-      LL_RTC_ALMA_SetHour(RTC, (uint8_t)((loc_u32ReloadValue / 3600) % 24));
-
-      // Enable RTC Alarm A interrupt again
-      LL_RTC_EnableIT_ALRA(RTC);
-
-      // Enter low-power STOP mode
-      LL_PWR_SetPowerMode(LL_PWR_MODE_STOP1);
-      LL_LPM_EnableDeepSleep();
-      #if (LPM_WAKEUP == LPM_WAKEUP_WFI)
-        __asm volatile("wfi");
-      #elif (LPM_WAKEUP == LPM_WAKEUP_WFE)
-        __asm volatile("wfe");
-      #else
-        #error "LPM_WAKEUP not defined"
-      #endif
-    }
+    loc_u32SleepTime = LPTIM_MAX_ARR;
   }
-  // After waking up, the RTC interrupt will trigger and resume from here
-  vTaskStepTick( xExpectedTime );
 
-  // Re-enable interrupts and resume normal operation
-  Bsp_ExitCritical(loc_u32InterruptValues);
+  // Read current LPTIM counter value
+  loc_u32LPTIMCurrentCount = LL_LPTIM_GetCounter(LPTIM1);
+  loc_u32WakeupTime = loc_u32LPTIMCurrentCount + loc_u32SleepTime;
 
-  // Enable SysTick
+  // Set new compare value to wake up
+  LL_LPTIM_SetCompare(LPTIM1, (loc_u32WakeupTime & LPTIM_MAX_ARR));
+
+  // Clear interrupt flags before sleeping to avoid missed events
+  LL_LPTIM_ClearFLAG_CMPM(LPTIM1);
+
+  // Enable LPTIM compare interrupt to wake up the system
+  LL_LPTIM_EnableIT_CMPM(LPTIM1);
+
+  __asm volatile( "dsb" );
+  __asm volatile( "wfi" );
+  __asm volatile( "isb" );
+
+  // Re-enable interrupts to allow the interrupt that brought the MCU out of sleep mode to execute immediately. */
+  __asm volatile( "cpsie i" ::: "memory" );
+  __asm volatile( "dsb" );
+  __asm volatile( "isb" );
+
+  // Disable interrupts again to not increase any slippage
+  __asm volatile( "cpsid i" ::: "memory" );
+  __asm volatile( "dsb" );
+  __asm volatile( "isb" );
+
+  // Read counter after wakeup
+  uint32_t loc_u32CounterAfterWakeup = LL_LPTIM_GetCounter(LPTIM1);
+  // Calculate elapsed time
+  uint32_t loc_u32ElapsedCounts = (loc_u32CounterAfterWakeup - loc_u32LPTIMCurrentCount) & 0xFFFF;
+  TickType_t loc_xElapsedTicks = loc_u32ElapsedCounts / gbl_u32LPTIMCountsPerTick;
+
+  // Adjust FreeRTOS tick count
+  vTaskStepTick(loc_xElapsedTicks);
+  /**
+   * If the RTOS is configured to use tickless idle functionality then the tick interrupt will be stopped, 
+   * and the microcontroller placed into a low power state, whenever the Idle task is the only task able to execute. 
+   * Upon exiting the low power state the tick count value must be corrected to account for the time that passed while it was stopped.
+   */
+  // xTaskCatchUpTicks(loc_xElapsedTicks);
+  /**
+   * Corrects the tick count value after the application code has held interrupts disabled for an extended period.
+   * This function is similar to vTaskStepTick(), however, unlike vTaskStepTick(), this function may move the tick count 
+   * forward past a time at which a task should be remove from the blocked state. That means xTaskCatchUpTicks() may remove tasks 
+   * from the blocked state.
+   */
+
+  // Reset count for next sleep
+  LL_LPTIM_ResetCounter(LPTIM1);
+  while(LL_LPTIM_GetCounter(LPTIM1) != 0u);
+  LL_LPTIM_DisableIT_CMPM(LPTIM1);
+
+  // Restore nominal SysTick operation
+  SysTick->VAL = 0;
   SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
-  LL_SYSTICK_EnableIT();
+
+  // Exit critical section after resuming normal operation
+  __asm volatile( "cpsie i" ::: "memory" );
 }
 
-static void Idle_PRV_SetupRTC(void)
+static void Idle_PRV_SetupLPTIM(void)
 {
-  // Enable the LSE (Low-Speed External) oscillator for RTC
-  LL_RCC_LSE_Enable();
-  while (!LL_RCC_LSE_IsReady());  // Wait for LSE to stabilize
+  // Enable LPTIM1 clock
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_LPTIM1);
+  LL_RCC_LSI_Enable();
+  while (LL_RCC_LSI_IsReady() != 1);
+  LL_RCC_SetLPTIMClockSource(LL_RCC_LPTIM1_CLKSOURCE_LSI);
 
-  // Enable RTC peripheral clock
-  LL_RCC_SetRTCClockSource(LL_RCC_RTC_CLKSOURCE_LSE);
-  LL_RCC_EnableRTC();
+  // Reset LPTIM1 per errata
+  LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_LPTIM1);
+  LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_LPTIM1);
 
-  // Configure RTC
-  LL_RTC_InitTypeDef rtc_init = {0};
-  rtc_init.HourFormat = LL_RTC_HOURFORMAT_24HOUR;  // 24-hour format
-  rtc_init.AsynchPrescaler = 0x7F;                    // Asynchronous prescaler
-  rtc_init.SynchPrescaler = 0xFF;                     // Synchronous prescaler
+  // Stop LPTIM in debug
+  DBGMCU->APB1FZR1 |= DBGMCU_APB1FZR1_DBG_LPTIM1_STOP;
 
-  LL_RTC_Init(RTC, &rtc_init);
+  // Calculate the number of LPTIM counts per FreeRTOS tick
+  gbl_u32LPTIMCountsPerTick = LPTIM_CLOCK_HZ / configTICK_RATE_HZ;
 
-  // Enable RTC Alarm A interrupt
-  LL_RTC_EnableIT_ALRA(RTC);
+  // Configure LPTIM1
+  LL_LPTIM_Enable(LPTIM1);
 
-  // Configure RTC Alarm A to trigger every second
-  LL_RTC_ALMA_Enable(RTC);
-  LL_RTC_ALMA_SetMask(RTC, LL_RTC_ALMA_MASK_NONE);  // No masking
-  LL_RTC_ALMA_SetSubSecond(RTC, 0);  // No subsecond
-  LL_RTC_DATE_SetMonth(RTC, LL_RTC_MONTH_JANUARY);     // Set alarm month
-  LL_RTC_ALMA_SetDay(RTC, 1);       // Set alarm day
-  LL_RTC_ALMA_SetHour(RTC, 0);     // Set alarm hours
-  LL_RTC_ALMA_SetMinute(RTC, 0);   // Set alarm minutes
-  LL_RTC_ALMA_SetSecond(RTC, 1);   // Set alarm seconds (1 second interval)
-  LL_RTC_ALMA_SetWeekDay(RTC, LL_RTC_WEEKDAY_MONDAY);
+  LL_LPTIM_SetPrescaler(LPTIM1, LL_LPTIM_PRESCALER_DIV1);
+  LL_LPTIM_SetAutoReload(LPTIM1, LPTIM_MAX_ARR);
 
-  // Enable alarm
-  LL_RTC_ALMA_Enable(RTC);
+  Interrupts_Enable(INT_LPTIM);
+
+  // Start the timer in continuous mode
+  LL_LPTIM_StartCounter(LPTIM1, LL_LPTIM_OPERATING_MODE_CONTINUOUS);
 }
+
+#endif
+
+#if (configUSE_IDLE_HOOK == 1)
+void vApplicationIdleHook(void)
+{
+  __NOP();
+}
+#endif
