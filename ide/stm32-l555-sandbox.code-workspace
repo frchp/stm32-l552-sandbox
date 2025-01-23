@@ -20,7 +20,12 @@
 		},
 		"cortex-debug.variableUseNaturalFormat": false,
 		"files.associations": {
-			"motor_task.h": "c"
+			"motor_task.h": "c",
+			"*.in": "cpp",
+			"initializer_list": "c",
+			"utility": "c",
+			"xutility": "c",
+			"xmemory": "c"
 		}
 	}
 }

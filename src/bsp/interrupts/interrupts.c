@@ -114,18 +114,21 @@ void DMA1_Channel1_IRQHandler(void)
 
 void LPUART1_IRQHandler(void)
 {
-  /* Check RXNE flag value in ISR register */
   if (LL_LPUART_IsActiveFlag_RXNE(LPUART1))
   {
-    /* RXNE flag will be cleared by reading of RDR register (done in call) */
-    /* Call function in charge of handling Character reception */
+    // Flag is cleared by reading register
     Uart_RxByteComplete();
   }
 
   if(LL_LPUART_IsActiveFlag_NE(LPUART1))
   {
-    /* case Noise Error flag is raised : Clear NF Flag */
     LL_LPUART_ClearFlag_NE(LPUART1);
+  }
+
+  if(LL_LPUART_IsActiveFlag_TC(LPUART1))
+  {
+    UART_TxByteComplete();
+    LL_LPUART_ClearFlag_TC(LPUART1);
   }
 }
 

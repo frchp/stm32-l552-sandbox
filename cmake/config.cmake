@@ -16,3 +16,6 @@ configure_file(${PROJ_PATH}/src/app/intensity_sensor/intensity_sensor_config.h.i
 
 set(SPEED_SENSOR_PULSES_PER_REV 4)
 configure_file(${PROJ_PATH}/src/app/speed_sensor/speed_sensor_config.h.in ${CMAKE_BINARY_DIR}/speed_sensor_config.h)
+
+set(RING_BUFFER_LEN_MAX 15)
+configure_file(${PROJ_PATH}/src/utils/ring_buffer/ring_buffer_config.h.in ${CMAKE_BINARY_DIR}/ring_buffer_config.h)
