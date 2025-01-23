@@ -8,7 +8,7 @@
 #define MOTOR_TASK_PRIORITY     (2u)
 #define MOTOR_TASK_STACK_SIZE   (128u)
 
-extern TaskHandle_t MotorDrivingTaskHandle;
+extern TaskHandle_t gbl_sMotorDrivingTaskHandle;
 extern StackType_t gbl_sStackMotor[MOTOR_TASK_STACK_SIZE];
 extern StaticTask_t gbl_sTCBMotor;
 
@@ -20,6 +20,6 @@ void MotorDrivingTask_Notify(uint32_t arg_u32Evt);
 
 void MotorDrivingTask_Run(void *arg_vMtrCfg);
 
-void MotorDrivingTask(void *pvParameters);
+void MotorDrivingTask(void *arg_pvParameters);
 
 #endif // _MOTOR_TASK_H_

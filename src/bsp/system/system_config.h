@@ -34,7 +34,4 @@
 #define EXTERNAL_SAI2_CLOCK_VALUE   48000UL /*!< Value of the SAI2 External clock source in Hz*/
 #endif /* EXTERNAL_SAI2_CLOCK_VALUE */
 
-
-
-
 #endif // _SYSTEM_CONFIG_H_

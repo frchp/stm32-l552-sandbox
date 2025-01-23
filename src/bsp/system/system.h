@@ -36,17 +36,17 @@ void Bsp_InitClock(void);
  */
 static inline uint32_t Bsp_EnterCritical(void)
 {
-  uint32_t irqState = __get_PRIMASK();
+  uint32_t loc_u32irqState = __get_PRIMASK();
   __disable_irq();
-  return irqState;
+  return loc_u32irqState;
 }
 
 /**
   @brief Exit critical section.
  */
-static inline void Bsp_ExitCritical(uint32_t irqState)
+static inline void Bsp_ExitCritical(uint32_t arg_u32irqState)
 {
-  if (irqState == 0U) {
+  if (arg_u32irqState == 0U) {
     __enable_irq();
   }
 }

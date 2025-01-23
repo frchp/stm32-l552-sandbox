@@ -2,8 +2,6 @@
 #include "timer_pwm.h"
 #include "error.h"
 
-static Motor_Control_t gbl_MtrStatus = {MTR_DIR_CW, 0u};
-
 /**
   @brief Setup the MotorController.
  */
@@ -15,9 +13,9 @@ void MotorController_Init(void)
 /**
   @brief Start or update started motor.
  */
-void MotorController_Run(Motor_Control_t arg_sMtrOrder)
+void MotorController_Run(const Motor_Control_t arg_csMtrOrder)
 {
-  switch(arg_sMtrOrder.eDirection)
+  switch(arg_csMtrOrder.eDirection)
   {
     case MTR_DIR_CCW:
       DirectionController_GoCCW();
@@ -29,7 +27,7 @@ void MotorController_Run(Motor_Control_t arg_sMtrOrder)
       DirectionController_GoCW();
       break;
   }
-  TimerPwm_SetDutyCycle(arg_sMtrOrder.u32Speed);
+  TimerPwm_SetDutyCycle(arg_csMtrOrder.u32Speed);
 }
 
 /**

@@ -14,7 +14,7 @@
 void TaskHandler_Init(void)
 {
   // Create MEDIA Task
-  MediaTaskHandle = xTaskCreateStatic(MediaTask,            // Task function
+  gbl_sMediaTaskHandle = xTaskCreateStatic(MediaTask,            // Task function
               "MEDIA",              // Task name
               MEDIA_TASK_STACK_SIZE,                  // Stack size in words
               NULL,                 // Task parameter
@@ -23,7 +23,7 @@ void TaskHandler_Init(void)
               &gbl_sTCBMedia );
 
   // Create MOTOR_DRIVING Task
-  MotorDrivingTaskHandle = xTaskCreateStatic(MotorDrivingTask,            // Task function
+  gbl_sMotorDrivingTaskHandle = xTaskCreateStatic(MotorDrivingTask,            // Task function
               "MOTOR_DRIVING",             // Task name
               MOTOR_TASK_STACK_SIZE,                         // Stack size in words
               NULL,                        // Task parameter
@@ -32,7 +32,7 @@ void TaskHandler_Init(void)
               &gbl_sTCBMotor );
 
   // Create WATCHDOG Task
-  WatchdogTaskHandle = xTaskCreateStatic(WatchdogTask,            // Task function
+  gbl_sWatchdogTaskHandle = xTaskCreateStatic(WatchdogTask,            // Task function
               "WATCHDOG",             // Task name
               WDOG_TASK_STACK_SIZE,                         // Stack size in words
               NULL,                        // Task parameter

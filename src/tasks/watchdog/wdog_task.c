@@ -3,13 +3,13 @@
 #include "watchdog.h"
 
 /* Watchdog task parameters */
-TaskHandle_t WatchdogTaskHandle;
+TaskHandle_t gbl_sWatchdogTaskHandle;
 StackType_t gbl_sStackWdog [WDOG_TASK_STACK_SIZE];
 StaticTask_t gbl_sTCBWdog;
 
-void WatchdogTask(void *pvParameters)
+void WatchdogTask(void *arg_pvParameters)
 {
-    (void)pvParameters; // Avoid compiler warning for unused parameter
+    (void)arg_pvParameters; // Avoid compiler warning for unused parameter
 
     for (;;)
     {

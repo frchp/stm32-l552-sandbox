@@ -13,7 +13,7 @@
 static uint32_t gbl_au32PulsesDetected[TIMER_COUNTER_NB_PULSES];
 static fpCounterCallback gbl_fpListener = NULL;
 
-static const uint32_t TIM_COUNTER_FREQ_HZ = 1000000ul; // 1us resolution
+#define TIM_COUNTER_FREQ_HZ 1000000ul /* 1us resolution */
 
 static void TimerCounter_PRV_InitDMA(void);
 
@@ -22,10 +22,10 @@ static void TimerCounter_PRV_InitDMA(void);
  */
 void TimerCounter_Init(void)
 {
-  static bool bInitialized = false;
-  if(!bInitialized)
+  static bool loc_bInitialized = false;
+  if(!loc_bInitialized)
   {
-    bInitialized = true;
+    loc_bInitialized = true;
     // Init DMA transfer from TIM1 to saved pulses values
     TimerCounter_PRV_InitDMA();
 
@@ -43,10 +43,10 @@ void TimerCounter_Init(void)
     LL_TIM_IC_SetPrescaler(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_ICPSC_DIV1);
     LL_TIM_IC_SetFilter(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_FILTER_FDIV1);
     LL_TIM_IC_SetPolarity(TIM1, LL_TIM_CHANNEL_CH1, LL_TIM_IC_POLARITY_RISING);  LL_TIM_EnableIT_CC1(TIM1);
-    
+
     // Enable DMA request on TIM1_CH1 capture, no need for interrupt
     LL_TIM_EnableDMAReq_CC1(TIM1);
-    
+
     LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
   }
 }
