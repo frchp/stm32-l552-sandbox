@@ -47,9 +47,8 @@ void MotorDrivingTask_Notify(uint32_t arg_u32Evt)
   }
 }
 
-void MotorDrivingTask_SetCfg(void *arg_vMtrCfg)
+void MotorDrivingTask_Run(void *arg_vMtrCfg)
 {
-  // TODO : fill queue
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
   if(gbl_bTaskInitialized)
   {
@@ -68,6 +67,7 @@ void MotorDrivingTask_SetCfg(void *arg_vMtrCfg)
                     0u);
     }
   }
+  MotorDrivingTask_Notify(MTR_EVT_GO);
 }
 
 void MotorDrivingTask(void *pvParameters)
@@ -82,7 +82,6 @@ void MotorDrivingTask(void *pvParameters)
                                  au8MotorDrivingCfgQueueStorage,
                                  &MotorDrivingCfgQueue );
   configASSERT( MotorDrivingQueueHdl );
-
   gbl_bTaskInitialized = true;
 
   for (;;)
@@ -96,15 +95,10 @@ void MotorDrivingTask(void *pvParameters)
     {
       if( ( u32Notifications & MTR_EVT_GO ) != 0 )
       {
-        MotorController_Run();
-      }
-
-      if( ( u32Notifications & MTR_EVT_CFG ) != 0 )
-      {
         if(xQueueReceive(MotorDrivingQueueHdl, &sMotorCfg, 0u) == pdPASS)
         {
           // Motor configuration is in queue
-          MotorController_Configure(sMotorCfg);
+          MotorController_Run(sMotorCfg);
         }
       }
 

@@ -6,6 +6,10 @@
 #include "motor_controller.h"
 #include "speed_sensor.h"
 #include "intensity_sensor.h"
+#include "media_task.h"
+#include "motor_task.h"
+
+static Motor_Control_t *gbl_psMtrControl;
 
 #define BYTE_MASK (0xFF)
 #define GET_MSB1(arg_u32Val) ((arg_u32Val >> 24u) & BYTE_MASK)
@@ -39,11 +43,29 @@ void OrderHandler_Init(void)
 }
 
 /**
-  @brief OrderHandler needs to decode a message.
+  @brief OrderHandler is notified message has been received
  */
 void OrderHandler_MessageReceived(void)
 {
-  uint8_t loc_au8IncomingMsg[ORDER_MAX_SIZE];
+  // uint8_t loc_au8IncomingMsg[ORDER_MAX_SIZE]; // TODO : use a ring buffer here to copy it inside
+  // Uart_Receive(loc_au8IncomingMsg);
+  MediaTask_OnReception();
+}
+
+/**
+  @brief OrderHandler is notified message has been transmitted
+ */
+void OrderHandler_MessageTransmitted(void)
+{
+  // Nothing to do
+}
+
+/**
+  @brief OrderHandler needs to decode a message.
+ */
+void OrderHandler_HandleRx(void)
+{
+  uint8_t loc_au8IncomingMsg[ORDER_MAX_SIZE]; // TODO : use a ring buffer to find command
   Uart_Receive(loc_au8IncomingMsg);
   OrderDispatch_t loc_sOrder = OrderHandler_PRV_FindCommand(loc_au8IncomingMsg[ORDER_IDX_CMD]);
   if(loc_sOrder.fpCallback != NULL)
@@ -54,14 +76,6 @@ void OrderHandler_MessageReceived(void)
   {
     OrderHandler_PRV_Send(ORDER_BAD_ACK, 0);
   }
-}
-
-/**
-  @brief OrderHandler is notified message has been transmitted
- */
-void OrderHandler_MessageTransmitted(void)
-{
-  // Nothing to do
 }
 
 static void OrderHandler_PRV_Send(Orders_t arg_eCmd, uint32_t arg_u32FacultativeData)
@@ -91,16 +105,14 @@ static OrderDispatch_t OrderHandler_PRV_FindCommand(Orders_t arg_eCmd)
 
 static void OrderHandler_PRV_Start(uint8_t* arg_au8Msg)
 {
-  uint8_t loc_u8Speed = arg_au8Msg[ORDER_IDX_ARG_1];
-  uint8_t loc_u8Direction = arg_au8Msg[ORDER_IDX_ARG_2];
-  Motor_Control_t loc_sMtrControl = {loc_u8Direction, loc_u8Speed};
-  MotorController_Configure(loc_sMtrControl);
-  MotorController_Run();
+  gbl_psMtrControl->u32Speed = (uint32_t)arg_au8Msg[ORDER_IDX_ARG_1];
+  gbl_psMtrControl->eDirection = (MotorDirection_t)arg_au8Msg[ORDER_IDX_ARG_2];
+  MotorDrivingTask_Run(gbl_psMtrControl);
 }
 
 static void OrderHandler_PRV_Stop(uint8_t* arg_au8Msg)
 {
-  MotorController_Stop();
+  MotorDrivingTask_Notify(MTR_EVT_STOP);
 }
 
 static void OrderHandler_PRV_GetCurrent(uint8_t* arg_au8Msg)

@@ -13,30 +13,11 @@ void MotorController_Init(void)
 }
 
 /**
-  @brief Configure motor.
- */
-void MotorController_Configure(Motor_Control_t arg_sMtrOrder)
-{
-  switch(arg_sMtrOrder.eDirection)
-  {
-    case MTR_DIR_CW:
-    case MTR_DIR_CCW:
-      gbl_MtrStatus.eDirection = arg_sMtrOrder.eDirection;
-      break;
-
-    default:
-      Error_Handler();
-      break;
-  }
-  gbl_MtrStatus.u32Speed = arg_sMtrOrder.u32Speed;
-}
-
-/**
   @brief Start or update started motor.
  */
-void MotorController_Run(void)
+void MotorController_Run(Motor_Control_t arg_sMtrOrder)
 {
-  switch(gbl_MtrStatus.eDirection)
+  switch(arg_sMtrOrder.eDirection)
   {
     case MTR_DIR_CCW:
       DirectionController_GoCCW();
@@ -48,7 +29,7 @@ void MotorController_Run(void)
       DirectionController_GoCW();
       break;
   }
-  TimerPwm_SetDutyCycle(gbl_MtrStatus.u32Speed);
+  TimerPwm_SetDutyCycle(arg_sMtrOrder.u32Speed);
 }
 
 /**
