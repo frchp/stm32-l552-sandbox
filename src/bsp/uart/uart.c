@@ -14,14 +14,18 @@
 
 #include "cpu_delay.h"
 #include "interrupts.h"
+#include "error.h"
+#include "ring_buffer.h"
 
 #define UART_DELAY_REG_US (200u)
 
 static fpUartCallback gbl_fpTxListener = NULL;
 static fpUartCallback gbl_fpRxListener = NULL;
 
-static uint8_t gbl_au8RxBuffer[UART_MAX_SIZE];
-static uint8_t gbl_u8RxPosition = 0u;
+RingBuffer_t gbl_sRxBuffer;
+
+static uint8_t *gbl_au8TxBuffer;
+static uint8_t gbl_u8TxSize = 0u;
 
 /**
   @brief Setup the Uart.
@@ -32,6 +36,12 @@ void Uart_Init(void)
   if(!loc_bInitialized)
   {
     loc_bInitialized = true;
+
+    // Initialize Rx buffer
+    if(!RingBuffer_Init(&gbl_sRxBuffer, 2*UART_MAX_SIZE))
+    {
+      Error_Handler();
+    }
 
     LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -84,31 +94,37 @@ void Uart_Activate(void)
   WRITE_REG(LPUART1->ICR, UINT32_MAX);
   cpu_delay_WaitFor(UART_DELAY_REG_US);
 
-  /* Enable RXNE and Error interrupts */
+  /* Enable RXNE, TC and Error interrupts */
   LL_LPUART_EnableIT_RXNE(LPUART1);
   LL_LPUART_EnableIT_ERROR(LPUART1);
+  LL_LPUART_EnableIT_TC(LPUART1);
 }
 
 /**
   @brief Transmit given buffer.
  */
-void Uart_Transmit(uint8_t* arg_au8Buffer)
+void Uart_Transmit(uint8_t* arg_au8Buffer, uint8_t arg_u8Size)
 {
-  /* Send characters one per one, until last char to be sent */
-  for (uint8_t loc_u8index = 0; loc_u8index < UART_MAX_SIZE; loc_u8index++)
-  {
-    /* Wait for TXE flag to be raised */
-    while (!LL_LPUART_IsActiveFlag_TXE(LPUART1));
+  gbl_au8TxBuffer = arg_au8Buffer;
+  gbl_u8TxSize = arg_u8Size;
 
-    /* Write character in Transmit Data register.
+  // Send first byte
+  while (!LL_LPUART_IsActiveFlag_TXE(LPUART1));
+  /* Write character in Transmit Data register.
        TXE flag is cleared by writing data in TDR register */
-    LL_LPUART_TransmitData8(LPUART1, arg_au8Buffer[loc_u8index]);
+  LL_LPUART_TransmitData8(LPUART1, *gbl_au8TxBuffer);
+  gbl_u8TxSize--;
+  gbl_au8TxBuffer++;
+
+  if(gbl_u8TxSize == 0u)
+  {
+    // Frame was 1 byte long
+    Uart_TxComplete();
   }
-
-  /* Wait for TC flag to be raised for last char */
-  while (!LL_LPUART_IsActiveFlag_TC(LPUART1));
-
-  Uart_TxComplete();
+  else
+  {
+    // Rest of frame will be sent from interrupt
+  }
 }
 
 /**
@@ -155,6 +171,27 @@ void Uart_RxByteComplete(void)
     {
       gbl_u8RxPosition = 0u;
     }
+  }
+}
+
+/**
+  @brief Callback.
+ */
+void Uart_TxByteComplete(void)
+{
+  /* Write character in Transmit Data register.
+       TXE flag is cleared by writing data in TDR register */
+  LL_LPUART_TransmitData8(LPUART1, *gbl_au8TxBuffer);
+  gbl_u8TxSize--;
+  gbl_au8TxBuffer++;
+
+  if(gbl_u8TxSize == 0u)
+  {
+    Uart_TxComplete();
+  }
+  else
+  {
+    // Rest of frame will be sent from interrupt
   }
 }
 

@@ -15,7 +15,7 @@ ${PROJ_PATH}/src/bsp/timer_counter
 ${PROJ_PATH}/src/bsp/timer_pwm
 ${PROJ_PATH}/src/bsp/uart
 ${PROJ_PATH}/src/bsp/watchdog
-${PROJ_PATH}/src/tasks
+${PROJ_PATH}/src/utils/ring_buffer
 ${PROJ_PATH}/src
 ${PROJ_PATH}/inc
 # tasks

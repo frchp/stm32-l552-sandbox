@@ -10,10 +10,10 @@
  */
 void Watchdog_Activate(void)
 {
-  static bool bInitialized = false;
-  if(!bInitialized)
+  static bool loc_bInitialized = false;
+  if(!loc_bInitialized)
   {
-    bInitialized = true;
+    loc_bInitialized = true;
     /* Enable clock feeding IWDG (32kHz) */
     LL_RCC_LSI_Enable();
     while (!LL_RCC_LSI_IsReady());

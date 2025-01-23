@@ -1,0 +1,8 @@
+#ifndef __RING_BUFFER_CONFIG_H__
+#define __RING_BUFFER_CONFIG_H__
+
+#ifndef RING_BUFFER_LEN_MAX
+#define RING_BUFFER_LEN_MAX  @RING_BUFFER_LEN_MAX@
+#endif
+
+#endif // __RING_BUFFER_CONFIG_H__
