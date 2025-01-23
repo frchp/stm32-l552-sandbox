@@ -31,7 +31,7 @@ const uint32_t MSIRangeTable[16] = {100000U,   200000U,   400000U,   800000U,  1
                                     4000000U, 8000000U, 16000000U, 24000000U, 32000000U, 48000000U, \
                                     0U,       0U,       0U,        0U};
 
-const SignalConfig_t sAdcSignalConfig[ADC_NB_SIGNALS] =
+const SignalConfig_t gbl_sAdcSignalConfig[ADC_NB_SIGNALS] =
 {
   {
     BOARD_ADC_MTR_CURRENT_CHANNEL,
@@ -48,7 +48,7 @@ const SignalConfig_t sAdcSignalConfig[ADC_NB_SIGNALS] =
 #define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
 
-void system_PRV_InitGpio(void);
+static void system_PRV_InitGpio(void);
 
 /**
   @brief Setup the BSP.
@@ -141,7 +141,7 @@ void Bsp_Init (void)
 
   system_PRV_InitGpio();
 
-  Adc_Init(sAdcSignalConfig);
+  Adc_Init(gbl_sAdcSignalConfig);
   TimerCounter_Init();
   TimerPwm_Init();
   Uart_Init();
@@ -175,15 +175,11 @@ void Bsp_InitClock(void)
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
 
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_5);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_5)
-  {
-  }
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_5);
 
   LL_RCC_MSI_Enable();
   /* Wait till MSI is ready */
-  while(LL_RCC_MSI_IsReady() != 1)
-  {
-  }
+  while(LL_RCC_MSI_IsReady() != 1u);
   LL_RCC_MSI_EnableRangeSelection();
   LL_RCC_MSI_SetRange(LL_RCC_MSIRANGE_6);
   LL_RCC_MSI_SetCalibTrimming(0);
@@ -192,17 +188,13 @@ void Bsp_InitClock(void)
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_MSI, LL_RCC_PLLM_DIV_1, 55, LL_RCC_PLLR_DIV_2);
   LL_RCC_PLL_Enable();
   LL_RCC_PLL_EnableDomain_SYS();
-  while(LL_RCC_PLL_IsReady() != 1)
-  {
-  }
+  while(LL_RCC_PLL_IsReady() != 1u);
 
   /* Sysclk activation on the main PLL */
   /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_2);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
-  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
-  {
-  }
+  while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL);
 
   /* Insure 1µs transition state at intermediate medium speed clock*/
   for (__IO uint32_t i = (RCC_MAX_FREQUENCY_MHZ >> 1); i !=0; i--);
@@ -213,10 +205,6 @@ void Bsp_InitClock(void)
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
-  /* Set systick to 1ms in using frequency set to 110MHz */
-  /* This frequency can be calculated through LL RCC macro */
-  /* ex: __LL_RCC_CALC_PLLCLK_FREQ(MSI_VALUE,
-                                  LL_RCC_PLLM_DIV_1, 55, LL_RCC_PLLR_DIV_2)*/
   LL_Init1msTick(SYSTEM_FREQ);
 
   /* Update CMSIS variable (which can be updated also through SystemCoreClockUpdate function) */
@@ -226,12 +214,12 @@ void Bsp_InitClock(void)
   LL_ICACHE_Enable();
 }
 
-void system_PRV_InitGpio(void)
+static void system_PRV_InitGpio(void)
 {
-  static bool bInitialized = false;
-  if(!bInitialized)
+  static bool loc_bInitialized = false;
+  if(!loc_bInitialized)
   {
-    bInitialized = true;
+    loc_bInitialized = true;
 
     /** ADC1 GPIO Configuration for BOARD_ADC_MTR_CURRENT */
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);

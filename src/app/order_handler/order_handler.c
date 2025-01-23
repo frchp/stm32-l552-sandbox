@@ -24,7 +24,7 @@ static void OrderHandler_PRV_Stop(uint8_t* arg_au8Msg);
 static void OrderHandler_PRV_GetCurrent(uint8_t* arg_au8Msg);
 static void OrderHandler_PRV_GetSpeed(uint8_t* arg_au8Msg);
 
-static const OrderDispatch_t gbl_csDispatcher[ORDER_NB_MAX] = 
+static const OrderDispatch_t gbl_csDispatcher[ORDER_NB_MAX] =
 {
   {ORDER_MTR_START, OrderHandler_PRV_Start},
   {ORDER_MTR_STOP, OrderHandler_PRV_Stop},

@@ -9,7 +9,7 @@
 #include "task.h"
 
 /* Media task parameters*/
-TaskHandle_t MediaTaskHandle;
+TaskHandle_t gbl_sMediaTaskHandle;
 StackType_t gbl_sStackMedia [MEDIA_TASK_STACK_SIZE];
 StaticTask_t gbl_sTCBMedia;
 
@@ -23,19 +23,19 @@ void MediaTask_OnReception(void)
     if(xPortIsInsideInterrupt() != 0u)
     {
       // In interrupt context
-      vTaskNotifyGiveFromISR(MediaTaskHandle, &xHigherPriorityTaskWoken);
+      vTaskNotifyGiveFromISR(gbl_sMediaTaskHandle, &xHigherPriorityTaskWoken);
       portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
     }
     else
     {
-      xTaskNotifyGive(MediaTaskHandle);
+      xTaskNotifyGive(gbl_sMediaTaskHandle);
     }
   }
 }
 
-void MediaTask(void *pvParameters)
+void MediaTask(void *arg_pvParameters)
 {
-  (void)pvParameters; // Avoid compiler warning for unused parameter
+  (void)arg_pvParameters; // Avoid compiler warning for unused parameter
   uint32_t u32NotifiedValue;
 
   gbl_bTaskInitialized = true;

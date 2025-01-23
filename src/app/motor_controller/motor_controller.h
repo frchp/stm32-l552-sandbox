@@ -19,7 +19,7 @@ void MotorController_Init(void);
 /**
   @brief Start or update started motor.
  */
-void MotorController_Run(Motor_Control_t arg_sMtrOrder);
+void MotorController_Run(const Motor_Control_t arg_csMtrOrder);
 
 /**
   @brief Stop motor.

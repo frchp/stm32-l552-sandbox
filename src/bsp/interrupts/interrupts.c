@@ -82,7 +82,7 @@ void ADC1_2_IRQHandler(void)
   {
     /* Clear flag ADC group regular overrun */
     LL_ADC_ClearFlag_OVR(ADC1);
-    
+
     LL_ADC_DisableIT_OVR(ADC1);
   }
 }
@@ -97,17 +97,17 @@ void DMA1_Channel1_IRQHandler(void)
   {
     /* Clear flag DMA transfer complete */
     LL_DMA_ClearFlag_TC1(DMA1);
-    
+
     /* Call interruption treatment function */
     Adc_Notify();
   }
-  
+
   /* Check whether DMA transfer error caused the DMA interruption */
   if(LL_DMA_IsActiveFlag_TE1(DMA1))
   {
     /* Clear flag DMA transfer error */
     LL_DMA_ClearFlag_TE1(DMA1);
-    
+
     Error_Handler();
   }
 }

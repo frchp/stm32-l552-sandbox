@@ -8,10 +8,10 @@
 #define WDOG_TASK_PRIORITY     (3u)
 #define WDOG_TASK_STACK_SIZE   (128u)
 
-extern TaskHandle_t WatchdogTaskHandle;
+extern TaskHandle_t gbl_sWatchdogTaskHandle;
 extern StackType_t gbl_sStackWdog[WDOG_TASK_STACK_SIZE];
 extern StaticTask_t gbl_sTCBWdog;
 
-void WatchdogTask(void *pvParameters);
+void WatchdogTask(void *arg_pvParameters);
 
 #endif // _WDOG_TASK_H_

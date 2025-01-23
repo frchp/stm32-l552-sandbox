@@ -27,12 +27,6 @@
 
 #define LPM_MODE LPM_MODE_LP_SLEEP
 
-#if (LPM_MODE == LPM_MODE_STOP)
-  #error "LPM_MODE_STOP not implemented"
-#elif (LPM_MODE == LPM_MODE_STOP)
-
-#endif
-
 #define LPM_WAKEUP_WFI      1
 #define LPM_WAKEUP_WFE      2
 #define LPM_WAKEUP LPM_WAKEUP_WFI
@@ -111,19 +105,19 @@ void Idle_OnPostSleepProcessing(uint32_t xExpectedTime)
 */
 void Idle_TicklessIdleSleep(uint32_t xExpectedTime)
 {
-  static bool bFirstSleep = true;  // Set to true for first time called
-  uint32_t ulReloadValue;
-  uint32_t ulInterruptValues;
+  static bool loc_bFirstSleep = true;  // Set to true for first time called
+  uint32_t loc_u32ReloadValue;
+  uint32_t loc_u32InterruptValues;
 
-  if(bFirstSleep == true)
+  if(loc_bFirstSleep == true)
   {
-    bFirstSleep = false;
+    loc_bFirstSleep = false;
     Idle_PRV_SetupRTC();
   }
 
 
   // Calculate the reload value based on expected idle time
-  ulReloadValue = xExpectedTime * (LPM_RTC_FREQUENCY / LPM_TICK_RATE_HZ);
+  loc_u32ReloadValue = xExpectedTime * (LPM_RTC_FREQUENCY / LPM_TICK_RATE_HZ);
 
   eSleepModeStatus eSleepStatus = eTaskConfirmSleepModeStatus();
   if( eSleepStatus == eAbortSleep )
@@ -139,7 +133,7 @@ void Idle_TicklessIdleSleep(uint32_t xExpectedTime)
     LL_SYSTICK_DisableIT();
 
     // Disable interrupts (critical section)
-    ulInterruptValues = Bsp_EnterCritical();
+    loc_u32InterruptValues = Bsp_EnterCritical();
 
     if( eSleepStatus == eNoTasksWaitingTimeout )
     {
@@ -160,9 +154,9 @@ void Idle_TicklessIdleSleep(uint32_t xExpectedTime)
       LL_RTC_DisableIT_ALRA(RTC);
 
       // Set the alarm for the calculated number of seconds
-      LL_RTC_ALMA_SetSecond(RTC, (uint8_t)(ulReloadValue % 60));
-      LL_RTC_ALMA_SetMinute(RTC, (uint8_t)((ulReloadValue / 60) % 60));
-      LL_RTC_ALMA_SetHour(RTC, (uint8_t)((ulReloadValue / 3600) % 24));
+      LL_RTC_ALMA_SetSecond(RTC, (uint8_t)(loc_u32ReloadValue % 60));
+      LL_RTC_ALMA_SetMinute(RTC, (uint8_t)((loc_u32ReloadValue / 60) % 60));
+      LL_RTC_ALMA_SetHour(RTC, (uint8_t)((loc_u32ReloadValue / 3600) % 24));
 
       // Enable RTC Alarm A interrupt again
       LL_RTC_EnableIT_ALRA(RTC);
@@ -183,7 +177,7 @@ void Idle_TicklessIdleSleep(uint32_t xExpectedTime)
   vTaskStepTick( xExpectedTime );
 
   // Re-enable interrupts and resume normal operation
-  Bsp_ExitCritical(ulInterruptValues);
+  Bsp_ExitCritical(loc_u32InterruptValues);
 
   // Enable SysTick
   SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;

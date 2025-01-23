@@ -28,10 +28,10 @@ static uint8_t gbl_u8RxPosition = 0u;
  */
 void Uart_Init(void)
 {
-  static bool bInitialized = false;
-  if(!bInitialized)
+  static bool loc_bInitialized = false;
+  if(!loc_bInitialized)
   {
-    bInitialized = true;
+    loc_bInitialized = true;
 
     LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
     LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -98,9 +98,7 @@ void Uart_Transmit(uint8_t* arg_au8Buffer)
   for (uint8_t loc_u8index = 0; loc_u8index < UART_MAX_SIZE; loc_u8index++)
   {
     /* Wait for TXE flag to be raised */
-    while (!LL_LPUART_IsActiveFlag_TXE(LPUART1))
-    {
-    }
+    while (!LL_LPUART_IsActiveFlag_TXE(LPUART1));
 
     /* Write character in Transmit Data register.
        TXE flag is cleared by writing data in TDR register */
@@ -108,9 +106,7 @@ void Uart_Transmit(uint8_t* arg_au8Buffer)
   }
 
   /* Wait for TC flag to be raised for last char */
-  while (!LL_LPUART_IsActiveFlag_TC(LPUART1))
-  {
-  }
+  while (!LL_LPUART_IsActiveFlag_TC(LPUART1));
 
   Uart_TxComplete();
 }

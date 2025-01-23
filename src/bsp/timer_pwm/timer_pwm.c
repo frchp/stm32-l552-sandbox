@@ -13,10 +13,10 @@
  */
 void TimerPwm_Init(void)
 {
-  static bool bInitialized = false;
-  if(!bInitialized)
+  static bool loc_bInitialized = false;
+  if(!loc_bInitialized)
   {
-    bInitialized = true;
+    loc_bInitialized = true;
     // Enable TIM3 clock
     LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM3);
 
@@ -67,10 +67,10 @@ inline void TimerPwm_SetDutyCycle(uint32_t arg_u32DutyCycle)
   {
     loc_u32DutyCycle = TIMER_PWM_MAX_DUTY_CYCLE;
   }
-  
+
   /* PWM signal period is determined by the value of the auto-reload register */
   loc_u32TimerPeriod = LL_TIM_GetAutoReload(TIM3) + 1;
-  
+
   /* Pulse duration is determined by the value of the compare register.       */
   /* Its value is calculated in order to match the requested duty cycle.      */
   loc_u32PulseDuration = (loc_u32DutyCycle*loc_u32TimerPeriod)/TIMER_PWM_MAX_DUTY_CYCLE;

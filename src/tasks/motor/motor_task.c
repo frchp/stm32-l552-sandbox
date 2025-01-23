@@ -11,16 +11,16 @@
 #include "motor_controller.h"
 
 /* Motor task parameters */
-TaskHandle_t MotorDrivingTaskHandle;
+TaskHandle_t gbl_sMotorDrivingTaskHandle;
 StackType_t gbl_sStackMotor [MOTOR_TASK_STACK_SIZE];
 StaticTask_t gbl_sTCBMotor;
 
 /* Queue motor config */
 #define MTR_QUEUE_LENGTH            5u
 #define MTR_QUEUE_ITEM_SIZE         sizeof( Motor_Control_t )
-static StaticQueue_t MotorDrivingCfgQueue;
-uint8_t au8MotorDrivingCfgQueueStorage[ MTR_QUEUE_LENGTH * MTR_QUEUE_ITEM_SIZE ];
-QueueHandle_t MotorDrivingQueueHdl;
+static StaticQueue_t gbl_sMotorDrivingCfgQueue;
+static uint8_t gbl_au8MtrCfgQueueStorage[ MTR_QUEUE_LENGTH * MTR_QUEUE_ITEM_SIZE ];
+static QueueHandle_t gbl_sMotorDrivingQueueHdl;
 
 static bool gbl_bTaskInitialized = false;
 
@@ -32,7 +32,7 @@ void MotorDrivingTask_Notify(uint32_t arg_u32Evt)
     if(xPortIsInsideInterrupt() != 0u)
     {
         // In interrupt context
-        xTaskNotifyFromISR( MotorDrivingTaskHandle,
+        xTaskNotifyFromISR( gbl_sMotorDrivingTaskHandle,
                         arg_u32Evt,
                         eSetBits,
                         &xHigherPriorityTaskWoken );
@@ -40,7 +40,7 @@ void MotorDrivingTask_Notify(uint32_t arg_u32Evt)
     }
     else
     {
-        xTaskNotify( MotorDrivingTaskHandle,
+        xTaskNotify( gbl_sMotorDrivingTaskHandle,
                             arg_u32Evt,
                             eSetBits );
     }
@@ -55,14 +55,14 @@ void MotorDrivingTask_Run(void *arg_vMtrCfg)
     if(xPortIsInsideInterrupt() != 0u)
     {
       // In interrupt context
-      xQueueSendToBackFromISR(MotorDrivingQueueHdl,
+      xQueueSendToBackFromISR(gbl_sMotorDrivingQueueHdl,
                     arg_vMtrCfg,
                     &xHigherPriorityTaskWoken);
       portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
     }
     else
     {
-      xQueueSendToBack(MotorDrivingQueueHdl,
+      xQueueSendToBack(gbl_sMotorDrivingQueueHdl,
                     arg_vMtrCfg,
                     0u);
     }
@@ -70,18 +70,18 @@ void MotorDrivingTask_Run(void *arg_vMtrCfg)
   MotorDrivingTask_Notify(MTR_EVT_GO);
 }
 
-void MotorDrivingTask(void *pvParameters)
+void MotorDrivingTask(void *arg_pvParameters)
 {
-  (void)pvParameters; // Avoid compiler warning for unused parameter
+  (void)arg_pvParameters; // Avoid compiler warning for unused parameter
   uint32_t u32Notifications = 0ul;
   uint32_t u32Status = pdPASS;
   Motor_Control_t sMotorCfg;
 
-  MotorDrivingQueueHdl = xQueueCreateStatic( MTR_QUEUE_LENGTH,
+  gbl_sMotorDrivingQueueHdl = xQueueCreateStatic( MTR_QUEUE_LENGTH,
                                  MTR_QUEUE_ITEM_SIZE,
-                                 au8MotorDrivingCfgQueueStorage,
-                                 &MotorDrivingCfgQueue );
-  configASSERT( MotorDrivingQueueHdl );
+                                 gbl_au8MtrCfgQueueStorage,
+                                 &gbl_sMotorDrivingCfgQueue );
+  configASSERT( gbl_sMotorDrivingQueueHdl );
   gbl_bTaskInitialized = true;
 
   for (;;)
@@ -95,7 +95,7 @@ void MotorDrivingTask(void *pvParameters)
     {
       if( ( u32Notifications & MTR_EVT_GO ) != 0 )
       {
-        if(xQueueReceive(MotorDrivingQueueHdl, &sMotorCfg, 0u) == pdPASS)
+        if(xQueueReceive(gbl_sMotorDrivingQueueHdl, &sMotorCfg, 0u) == pdPASS)
         {
           // Motor configuration is in queue
           MotorController_Run(sMotorCfg);
