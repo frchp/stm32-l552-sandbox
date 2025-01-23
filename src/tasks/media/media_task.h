@@ -12,6 +12,8 @@ extern TaskHandle_t MediaTaskHandle;
 extern StackType_t gbl_sStackMedia[MEDIA_TASK_STACK_SIZE];
 extern StaticTask_t gbl_sTCBMedia;
 
+void MediaTask_OnReception(void);
+
 void MediaTask(void *pvParameters);
 
 #endif // _MEDIA_TASK_H_
