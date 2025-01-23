@@ -8,7 +8,9 @@
 #include "stm32l5xx_ll_tim.h"
 #include "stm32l5xx_ll_adc.h"
 #include "stm32l5xx_ll_lpuart.h"
+#include "stm32l5xx_ll_lptim.h"
 
+#include "idle_task.h"
 #include "error.h"
 #include "adc.h"
 #include "timer_counter.h"
@@ -120,14 +122,9 @@ void LPUART1_IRQHandler(void)
     Uart_RxByteComplete();
   }
 
-  if(LL_LPUART_IsActiveFlag_NE(LPUART1))
-  {
-    LL_LPUART_ClearFlag_NE(LPUART1);
-  }
-
   if(LL_LPUART_IsActiveFlag_TC(LPUART1))
   {
-    UART_TxByteComplete();
+    Uart_TxByteComplete();
     LL_LPUART_ClearFlag_TC(LPUART1);
   }
 }
@@ -139,5 +136,14 @@ void DMA1_Channel2_IRQHandler(void)
     LL_DMA_ClearFlag_TC2(DMA1); // Clear transfer complete flag
 
     TimerCounter_AllPulsesDetected();
+  }
+}
+
+void LPTIM1_IRQHandler(void)
+{
+  if (LL_LPTIM_IsActiveFlag_CMPM(LPTIM1))
+  {
+    LL_LPTIM_ClearFlag_CMPM(LPTIM1);
+    // To wake up uC only
   }
 }

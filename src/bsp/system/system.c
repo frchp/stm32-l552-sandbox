@@ -10,6 +10,7 @@
 #include "uart.h"
 #include "watchdog.h"
 
+#include "core_cm33.h"
 #include "system_stm32l5xx.h"
 #include "stm32l5xx_ll_rcc.h"
 #include "stm32l5xx_ll_icache.h"
@@ -20,10 +21,10 @@
 #include "stm32l5xx_ll_gpio.h"
 #include "stm32l5xx_ll_adc.h"
 
-#define SYSTEM_FREQ (110000000ul)
+#define SYSTEM_FREQ (110000000)
 
 // The SystemCoreClock variable is updated by calling CMSIS function SystemCoreClockUpdate()
-uint32_t SystemCoreClock = 4000000U;
+uint32_t SystemCoreClock = 110000000;
 
 const uint8_t  AHBPrescTable[16] = {0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 2U, 3U, 4U, 6U, 7U, 8U, 9U};
 const uint8_t  APBPrescTable[8] =  {0U, 0U, 0U, 0U, 1U, 2U, 3U, 4U};
@@ -171,15 +172,18 @@ void Bsp_InitClock(void)
 
   LL_PWR_DisableUCPDDeadBattery();
 
-  /* Enable voltage range 0 mode for frequency above 80 Mhz */
   LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE0);
 
   LL_FLASH_SetLatency(LL_FLASH_LATENCY_5);
   while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_5);
+  LL_PWR_EnableBkUpAccess();
+
+  // Enable LSI
+  LL_RCC_LSI_Enable();
+  while(LL_RCC_LSI_IsReady() != 1);
 
   LL_RCC_MSI_Enable();
-  /* Wait till MSI is ready */
-  while(LL_RCC_MSI_IsReady() != 1u);
+  while (LL_RCC_MSI_IsReady() != 1u);
   LL_RCC_MSI_EnableRangeSelection();
   LL_RCC_MSI_SetRange(LL_RCC_MSIRANGE_6);
   LL_RCC_MSI_SetCalibTrimming(0);
@@ -188,20 +192,11 @@ void Bsp_InitClock(void)
   LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_MSI, LL_RCC_PLLM_DIV_1, 55, LL_RCC_PLLR_DIV_2);
   LL_RCC_PLL_Enable();
   LL_RCC_PLL_EnableDomain_SYS();
-  while(LL_RCC_PLL_IsReady() != 1u);
+  while(LL_RCC_PLL_IsReady() != 1);
 
-  /* Sysclk activation on the main PLL */
-  /* Intermediate AHB prescaler 2 when target frequency clock is higher than 80 MHz */
-  LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_2);
   LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
   while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL);
-
-  /* Insure 1µs transition state at intermediate medium speed clock*/
-  for (__IO uint32_t i = (RCC_MAX_FREQUENCY_MHZ >> 1); i !=0; i--);
-
-  /* AHB prescaler 1 */
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-  /* Set APB1 & APB2 prescaler*/
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 

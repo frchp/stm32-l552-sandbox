@@ -55,8 +55,6 @@ Each MCU has their own ARM compiler flags. Those are defined in a individual mod
 ## Improvements (by order of priority)
  - OS : Continue integration.
  - BSP : handle errors in interrupts, handle error returned.
- - BSP : interrupts gives flags to application, no check done in interrupts, just the get, notify and clear of flags.
- - BSP : create own LL instead of vendor ?
 
 ## Documentation
  - [FreeRTOS and Low power](https://www.freertos.org/low-power-ARM-cortex-rtos)

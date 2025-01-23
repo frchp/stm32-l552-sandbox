@@ -2,7 +2,6 @@
 #define FREERTOS_CONFIG_H
 
 #include "stm32l552xx.h" // Include STM32-specific header for clock speed
-#include "idle_task.h" // Include idle task to have pre and post idle processing functions
 
 /*-----------------------------------------------------------
  * FreeRTOS Kernel Configuration
@@ -11,7 +10,7 @@
 /* Cortex-M specific definitions */
 #define configUSE_PREEMPTION                  1
 #define configCPU_CLOCK_HZ                    (SystemCoreClock) // CPU Clock Frequency
-#define configTICK_RATE_HZ                    ((TickType_t)1000) // 1 ms tick
+#define configTICK_RATE_HZ                    (1000u) // 1 ms tick
 #define configMAX_PRIORITIES                  5                 // Maximum number of priorities
 #define configMINIMAL_STACK_SIZE              ((uint16_t)128)   // Minimal stack size in words
 #define configTOTAL_HEAP_SIZE                 ((size_t)(10 * 1024)) // 10 KB heap size
@@ -20,7 +19,7 @@
 #define configIDLE_SHOULD_YIELD               1                 // Idle task yields CPU time
 
 /* Hook function definitions */
-#define configUSE_IDLE_HOOK                   1                 // Idle hook
+#define configUSE_IDLE_HOOK                   0                 // Idle hook
 #define configUSE_TICK_HOOK                   0                 // No tick hook
 #define configCHECK_FOR_STACK_OVERFLOW        0                 // Enable stack overflow checking
 #define configUSE_MALLOC_FAILED_HOOK          0                 // Enable malloc failed hook
@@ -51,20 +50,18 @@
 #define configMAX_CO_ROUTINE_PRIORITIES       2                 // Max co-routine priorities
 
 /* Interrupt nesting behavior configuration */
-#define configKERNEL_INTERRUPT_PRIORITY       (15 << (8 - __NVIC_PRIO_BITS)) // Lowest priority
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY  (5 << (8 - __NVIC_PRIO_BITS))  // Priority for FreeRTOS API calls
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY         7
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY    5
+#define configKERNEL_INTERRUPT_PRIORITY       (configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - __NVIC_PRIO_BITS)) // Lowest priority
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY  (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - __NVIC_PRIO_BITS))  // Priority for FreeRTOS API calls
 #define configMAX_API_CALL_INTERRUPT_PRIORITY configMAX_SYSCALL_INTERRUPT_PRIORITY // Alias for CMSIS compatibility
 
 /* Define to trap errors during development */
 #define configASSERT(x) if ((x) == 0) { taskDISABLE_INTERRUPTS(); for(;;); }
 
 /* Idle */
-#define configUSE_TICKLESS_IDLE               1                 // 1 to enable, 2 to create specific port
-#define configPRE_SLEEP_PROCESSING(xExpectedTime)            Idle_OnPreSleepProcessing(xExpectedTime)
-#define configPOST_SLEEP_PROCESSING(xExpectedTime)           Idle_OnPostSleepProcessing(xExpectedTime)
-#if (configUSE_TICKLESS_IDLE == 2u)
-  #define portSUPPRESS_TICKS_AND_SLEEP(xExpectedTime)        Idle_TicklessIdleSleep(xExpectedTime)
-#endif
+#define configEXPECTED_IDLE_TIME_BEFORE_SLEEP 5
+#define configUSE_TICKLESS_IDLE               2                 // 1 to enable, 2 to create specific port
 
 /*-----------------------------------------------------------
  * Optional functions

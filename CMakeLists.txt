@@ -19,9 +19,7 @@ list(APPEND CMAKE_MESSAGE_INDENT "|")
 project(stm32-l5-sandbox LANGUAGES C ASM)
 
 include(${CMAKE_MODULE_PATH}/config.cmake)
-if(USE_OS)
 include(${CMAKE_MODULE_PATH}/freertos.cmake)
-endif()
 include(${CMAKE_MODULE_PATH}/dependencies.cmake)
 
 set(linker_script_SRC               ${PROJ_PATH}/linker_script.ld)

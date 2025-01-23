@@ -79,9 +79,6 @@ void Uart_Init(void)
     LL_LPUART_SetTXFIFOThreshold(LPUART1, LL_LPUART_FIFOTHRESHOLD_1_8);
     LL_LPUART_SetRXFIFOThreshold(LPUART1, LL_LPUART_FIFOTHRESHOLD_1_8);
     LL_LPUART_DisableFIFO(LPUART1);
-    LL_LPUART_Enable(LPUART1);
-
-    while ((!(LL_LPUART_IsActiveFlag_TEACK(LPUART1))) || (!(LL_LPUART_IsActiveFlag_REACK(LPUART1))));
   }
 }
 
@@ -90,13 +87,14 @@ void Uart_Init(void)
  */
 void Uart_Activate(void)
 {
-  // Clear flags
-  WRITE_REG(LPUART1->ICR, UINT32_MAX);
-  cpu_delay_WaitFor(UART_DELAY_REG_US);
+  LL_LPUART_Enable(LPUART1);
+  while ((!(LL_LPUART_IsActiveFlag_TEACK(LPUART1))) || (!(LL_LPUART_IsActiveFlag_REACK(LPUART1))));
 
-  /* Enable RXNE, TC and Error interrupts */
+  // Clear flags
+  LL_LPUART_ClearFlag_TC(LPUART1);
+
+  /* Enable RXNE, TC interrupts */
   LL_LPUART_EnableIT_RXNE(LPUART1);
-  LL_LPUART_EnableIT_ERROR(LPUART1);
   LL_LPUART_EnableIT_TC(LPUART1);
 }
 
@@ -130,9 +128,12 @@ void Uart_Transmit(uint8_t* arg_au8Buffer, uint8_t arg_u8Size)
 /**
   @brief Receive given buffer.
  */
-void Uart_Receive(uint8_t* arg_au8Buffer)
+void Uart_Receive(uint8_t* arg_au8Buffer, uint8_t arg_u8Size)
 {
-  memcpy(arg_au8Buffer, gbl_au8RxBuffer, UART_MAX_SIZE);
+  for(uint8_t loc_u8Idx = 0u; loc_u8Idx < arg_u8Size; loc_u8Idx++)
+  {
+    arg_au8Buffer[loc_u8Idx] = RingBuffer_Remove(&gbl_sRxBuffer);
+  }
 }
 
 /**
@@ -151,26 +152,16 @@ void Uart_TxComplete(void)
  */
 void Uart_RxByteComplete(void)
 {
-  gbl_au8RxBuffer[gbl_u8RxPosition] = LL_LPUART_ReceiveData8(LPUART1);
-  if(gbl_au8RxBuffer[gbl_u8RxPosition] == UART_END_OF_MSG_CHAR)
+  if(RingBuffer_Add(&gbl_sRxBuffer, LL_LPUART_ReceiveData8(LPUART1)))
   {
     if(gbl_fpRxListener != NULL)
     {
       gbl_fpRxListener();
     }
-    gbl_u8RxPosition = 0u;
-    memset(gbl_au8RxBuffer, 0u, UART_MAX_SIZE); // clear buffer
   }
   else
   {
-    if(gbl_u8RxPosition < UART_MAX_SIZE)
-    {
-      gbl_u8RxPosition++;
-    }
-    else
-    {
-      gbl_u8RxPosition = 0u;
-    }
+    Error_Handler();
   }
 }
 
