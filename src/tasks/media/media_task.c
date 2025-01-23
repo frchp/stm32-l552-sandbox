@@ -7,11 +7,13 @@ StaticTask_t gbl_sTCBMedia;
 
 void MediaTask(void *pvParameters)
 {
-    (void)pvParameters; // Avoid compiler warning for unused parameter
+  (void)pvParameters; // Avoid compiler warning for unused parameter
 
-    for (;;)
-    {
-        // Block for 500 ms
-        vTaskDelay(pdMS_TO_TICKS(500));
-    }
+  // Create media task semaphore
+
+  for (;;)
+  {
+    // Block for 500 ms
+    vTaskDelay(pdMS_TO_TICKS(500));
+  }
 }

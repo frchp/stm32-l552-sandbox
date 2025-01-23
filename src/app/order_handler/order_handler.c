@@ -83,6 +83,7 @@ static OrderDispatch_t OrderHandler_PRV_FindCommand(Orders_t arg_eCmd)
     if(arg_eCmd == gbl_csDispatcher[loc_u8Idx].eOrder)
     {
       loc_sOrderFound = gbl_csDispatcher[loc_u8Idx];
+      break;
     }
   }
   return loc_sOrderFound;
@@ -92,8 +93,9 @@ static void OrderHandler_PRV_Start(uint8_t* arg_au8Msg)
 {
   uint8_t loc_u8Speed = arg_au8Msg[ORDER_IDX_ARG_1];
   uint8_t loc_u8Direction = arg_au8Msg[ORDER_IDX_ARG_2];
-
-  MotorController_Run(loc_u8Speed, loc_u8Direction);
+  Motor_Control_t loc_sMtrControl = {loc_u8Direction, loc_u8Speed};
+  MotorController_Configure(loc_sMtrControl);
+  MotorController_Run();
 }
 
 static void OrderHandler_PRV_Stop(uint8_t* arg_au8Msg)
