@@ -26,9 +26,7 @@ const SignalConfig_t gbl_sAdcSignalConfig[ADC_NB_SIGNALS] =
 void Bsp_Init (void)
 {
   system_InitSystem();
-
   Gpio_Init();
-
   Adc_Init(gbl_sAdcSignalConfig);
   TimerCounter_Init();
   TimerPwm_Init();
