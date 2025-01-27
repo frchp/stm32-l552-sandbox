@@ -47,7 +47,7 @@ void Interrupts_Enable(Interrupts_Desc_t arg_eInterrupt)
   */
 void HardFault_Handler(void)
 {
-  Error_Handler();
+  Error_Handler(true, ERR_BSP_CORTEX_FAULT, ERR_TYPE_FAULT);
 }
 
 /**
@@ -55,7 +55,7 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
-  Error_Handler();
+  Error_Handler(true, ERR_BSP_CORTEX_FAULT, ERR_TYPE_FAULT);
 }
 
 /**
@@ -63,7 +63,7 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
-  Error_Handler();
+  Error_Handler(true, ERR_BSP_CORTEX_FAULT, ERR_TYPE_FAULT);
 }
 
 /**
@@ -71,7 +71,7 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
-  Error_Handler();
+  Error_Handler(true, ERR_BSP_CORTEX_FAULT, ERR_TYPE_FAULT);
 }
 
 /**
@@ -110,7 +110,7 @@ void DMA1_Channel1_IRQHandler(void)
     /* Clear flag DMA transfer error */
     LL_DMA_ClearFlag_TE1(DMA1);
 
-    Error_Handler();
+    Error_Handler(false, ERR_BSP_DMA_CH1, ERR_TYPE_IRQ);
   }
 }
 

@@ -109,7 +109,8 @@ void MotorDrivingTask(void *arg_pvParameters)
     }
     else
     {
-      Error_Handler();
+      // OS error if we are here
+      Error_Handler(true, ERR_OS_MOTOR_TASK, ERR_TYPE_TIMEOUT);
     }
   }
 }

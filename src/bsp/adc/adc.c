@@ -153,7 +153,7 @@ uint16_t Adc_Get(ADCSignal_t arg_eSignal)
   uint16_t loc_u16Ret = 0u;
   if(arg_eSignal >= ADC_NB_SIGNALS)
   {
-    Error_Handler();
+    Error_Handler(false, ERR_BSP_ADC, ERR_TYPE_OVERFLOW);
   }
   else
   {

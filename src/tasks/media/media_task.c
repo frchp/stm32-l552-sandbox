@@ -53,7 +53,8 @@ void MediaTask(void *arg_pvParameters)
     }
     else
     {
-      Error_Handler();
+      // OS error if we are here
+      Error_Handler(true, ERR_OS_MEDIA_TASK, ERR_TYPE_TIMEOUT);
     }
   }
 }
