@@ -265,7 +265,7 @@ static void Adc_PRV_InitSamplingTimer(void)
   LL_TIM_SetClockDivision(TIM2, LL_TIM_CLOCKDIVISION_DIV4);
   LL_TIM_SetPrescaler(TIM2, (loc_u32TimerPrescaler - 1));
   LL_TIM_SetAutoReload(TIM2, (loc_u32TimerReload - 1));
-  LL_TIM_SetCounterMode(TIM2, LL_TIM_COUNTERMODE_UP); 
+  LL_TIM_SetCounterMode(TIM2, LL_TIM_COUNTERMODE_UP);
   LL_TIM_SetRepetitionCounter(TIM2, 0);
   LL_TIM_SetSlaveMode(TIM2, LL_TIM_SLAVEMODE_DISABLED);
   LL_TIM_SetTriggerOutput(TIM2, LL_TIM_TRGO_UPDATE);
