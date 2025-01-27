@@ -53,8 +53,7 @@ Each MCU has their own ARM compiler flags. Those are defined in a individual mod
 | STM32WL CM0  | `cortex-m0plus` | `Not used`    | `soft`      |
 
 ## Improvements (by order of priority)
- - OS : Continue integration.
- - BSP : handle errors in interrupts, handle error returned.
+ - BSP : independant from LL
 
 ## Documentation
  - [FreeRTOS and Low power](https://www.freertos.org/low-power-ARM-cortex-rtos)
