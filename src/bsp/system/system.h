@@ -18,6 +18,4 @@ void SystemCoreClockUpdate(void);
  */
 void system_InitSystem(void);
 
-void system_InitGpio(void);
-
 #endif // _SYSTEM_H_

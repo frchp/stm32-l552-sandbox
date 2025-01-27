@@ -9,6 +9,7 @@ ${PROJ_PATH}/src/app/order_handler
 ${PROJ_PATH}/src/app/speed_sensor
 ${PROJ_PATH}/src/bsp
 ${PROJ_PATH}/src/bsp/adc
+${PROJ_PATH}/src/bsp/gpio
 ${PROJ_PATH}/src/bsp/interrupts
 ${PROJ_PATH}/src/bsp/system
 ${PROJ_PATH}/src/bsp/timer_counter
