@@ -5,7 +5,7 @@
 #include "stm32l5xx_ll_adc.h"
 #include "stm32l5xx_ll_gpio.h"
 
-//! List the GPIO connexions
+//! List the GPIO connections
 
 // TIM3_CH2
 #define BOARD_GPIO_MTR_CTRL_PORT                          GPIOC
@@ -18,7 +18,11 @@
 #define BOARD_GPIO_MTR_DIR_PORT                           GPIOA
 #define BOARD_GPIO_MTR_DIR_PIN                            (LL_GPIO_PIN_1)
 
-//! List the ADC connexions
+// LED1
+#define BOARD_GPIO_LED_ALIVE_PORT                         GPIOA
+#define BOARD_GPIO_LED_ALIVE_PIN                          (LL_GPIO_PIN_9)
+
+//! List the ADC connections
 // ADC1_CH0
 #define BOARD_ADC_MTR_CURRENT_PORT                        GPIOC
 #define BOARD_ADC_MTR_CURRENT_PIN                         (LL_GPIO_PIN_0)

@@ -1,6 +1,8 @@
 #include "wdog_task.h"
 
 #include "watchdog.h"
+#include "board.h"
+#include "stm32l5xx_ll_gpio.h"
 
 /* Watchdog task parameters */
 TaskHandle_t gbl_sWatchdogTaskHandle;
@@ -13,8 +15,9 @@ void WatchdogTask(void *arg_pvParameters)
 
   for (;;)
   {
-    // Block for 200 ms and refresh watchdog
-    vTaskDelay(pdMS_TO_TICKS(200));
+    // Block for 300 ms and refresh watchdog
+    vTaskDelay(pdMS_TO_TICKS(300));
+    LL_GPIO_TogglePin(BOARD_GPIO_LED_ALIVE_PORT, BOARD_GPIO_LED_ALIVE_PIN);
     Watchdog_Refresh();
   }
 }
