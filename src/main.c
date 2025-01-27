@@ -15,6 +15,14 @@ static void main_prv_initGpio(void);
 
 #define LED1_Pin LL_GPIO_PIN_7
 #define LED1_GPIO_Port GPIOC
+
+#define LED2_Pin LL_GPIO_PIN_7
+#define LED2_GPIO_Port GPIOB
+
+#define LED3_Pin LL_GPIO_PIN_9
+#define LED3_GPIO_Port GPIOA
+
+
 #ifndef NVIC_PRIORITYGROUP_0
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  3 bits for subpriority */
@@ -38,7 +46,10 @@ int main(void)
 
   while(1)
   {
-    // Nothing to do
+    // LL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    // LL_mDelay(250);
+    // LL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+    // LL_mDelay(250);
   }
 }
 
@@ -47,6 +58,8 @@ static void main_prv_initGpio(void)
   LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
   LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOA);
+  LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOB);
   LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOC);
 
   LL_GPIO_ResetOutputPin(LED1_GPIO_Port, LED1_Pin);
@@ -69,6 +82,22 @@ static void main_prv_initGpio(void)
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   LL_GPIO_Init(LED1_GPIO_Port, &GPIO_InitStruct);
+
+  // LED config
+  GPIO_InitStruct.Pin = LED2_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(LED2_GPIO_Port, &GPIO_InitStruct);
+
+  // LED config
+  GPIO_InitStruct.Pin = LED3_Pin;
+  GPIO_InitStruct.Mode = LL_GPIO_MODE_OUTPUT;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  LL_GPIO_Init(LED3_GPIO_Port, &GPIO_InitStruct);
 
   NVIC_SetPriority(EXTI13_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(EXTI13_IRQn);
