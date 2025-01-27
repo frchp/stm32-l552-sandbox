@@ -2,7 +2,7 @@
 
 #include "ring_buffer.h"
 
-#include "system.h"
+#include "bsp.h"
 
 /**
  * Function to initialize a buffer structure with the given size.
