@@ -5,7 +5,7 @@
 #include "task.h"
 
 /* Motor task configuration */
-#define WDOG_TASK_PRIORITY     (3u)
+#define WDOG_TASK_PRIORITY     (1u)
 #define WDOG_TASK_STACK_SIZE   (128u)
 
 extern TaskHandle_t gbl_sWatchdogTaskHandle;

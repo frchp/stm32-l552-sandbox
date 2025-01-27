@@ -5,7 +5,7 @@
 #include "task.h"
 
 /* Media task configuration */
-#define MEDIA_TASK_PRIORITY     (2u)
+#define MEDIA_TASK_PRIORITY     (3u)
 #define MEDIA_TASK_STACK_SIZE   (128u)
 
 extern TaskHandle_t gbl_sMediaTaskHandle;

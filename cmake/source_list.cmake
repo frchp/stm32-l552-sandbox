@@ -26,6 +26,7 @@ ${PROJ_PATH}/src/tasks/task_handler.c
 ${PROJ_PATH}/src/tasks/idle/idle_task.c
 ${PROJ_PATH}/src/tasks/media/media_task.c
 ${PROJ_PATH}/src/tasks/motor/motor_task.c
+${PROJ_PATH}/src/tasks/supervisor/supervisor_task.c
 ${PROJ_PATH}/src/tasks/watchdog/wdog_task.c
 # vendor
 ${PROJ_PATH}/vendor/STM32L5xx_HAL_Driver/Src/stm32l5xx_ll_adc.c
