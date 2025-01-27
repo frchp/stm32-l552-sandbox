@@ -1,5 +1,4 @@
 #include <stddef.h>
-#include <assert.h>
 #include <stdbool.h>
 
 #include "adc.h"
@@ -80,19 +79,25 @@ void Adc_Init(const SignalConfig_t* arg_psSignal)
     LL_ADC_DisableDeepPowerDown(ADC1);
     LL_ADC_EnableInternalRegulator(ADC1);
 
-    assert(ADC_NB_SIGNALS < ADC_NB_RANKS);
-    for(uint8_t loc_u8idx = 0u; loc_u8idx < ADC_NB_SIGNALS; loc_u8idx++)
+    if(ADC_NB_SIGNALS < ADC_NB_RANKS)
     {
-      LL_ADC_REG_SetSequencerRanks(ADC1, gbl_cau32AdcRankCfg[loc_u8idx], arg_psSignal[loc_u8idx].Channel);
-      LL_ADC_SetChannelSamplingTime(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SAMPLINGTIME_47CYCLES_5);
-      LL_ADC_SetChannelSingleDiff(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SINGLE_ENDED);
+      for(uint8_t loc_u8idx = 0u; loc_u8idx < ADC_NB_SIGNALS; loc_u8idx++)
+      {
+        LL_ADC_REG_SetSequencerRanks(ADC1, gbl_cau32AdcRankCfg[loc_u8idx], arg_psSignal[loc_u8idx].Channel);
+        LL_ADC_SetChannelSamplingTime(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SAMPLINGTIME_47CYCLES_5);
+        LL_ADC_SetChannelSingleDiff(ADC1, arg_psSignal[loc_u8idx].Channel, LL_ADC_SINGLE_ENDED);
 
-      gbl_asAdcSignals[loc_u8idx] = arg_psSignal[loc_u8idx];
+        gbl_asAdcSignals[loc_u8idx] = arg_psSignal[loc_u8idx];
+      }
+
+      LL_ADC_EnableIT_OVR(ADC1);
+
+      Adc_PRV_InitSamplingTimer();
     }
-
-    LL_ADC_EnableIT_OVR(ADC1);
-
-    Adc_PRV_InitSamplingTimer();
+    else
+    {
+      Error_Handler(false, ERR_BSP_ADC, ERR_TYPE_INIT);
+    }
   }
 }
 
