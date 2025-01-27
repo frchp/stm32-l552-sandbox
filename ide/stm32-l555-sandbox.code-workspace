@@ -29,7 +29,10 @@
 			"cstddef": "c",
 			"type_traits": "c",
 			"algorithm": "c",
-			"limits": "c"
+			"limits": "c",
+			"compare": "cpp",
+			"tuple": "cpp",
+			"xtr1common": "cpp"
 		}
 	}
 }

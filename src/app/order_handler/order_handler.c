@@ -140,7 +140,7 @@ void OrderHandler_HandleRx(void)
       break;
 
     default:
-      Error_Handler();
+      Error_Handler(false, ERR_APP_ORDER_HANDLER, ERR_TYPE_DEFAULT);
       break;
   }
 }

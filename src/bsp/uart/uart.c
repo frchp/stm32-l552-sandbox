@@ -40,7 +40,7 @@ void Uart_Init(void)
     // Initialize Rx buffer
     if(!RingBuffer_Init(&gbl_sRxBuffer, 2*UART_MAX_SIZE))
     {
-      Error_Handler();
+      Error_Handler(true, ERR_BSP_UART, ERR_TYPE_INIT);
     }
 
     LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
@@ -161,7 +161,7 @@ void Uart_RxByteComplete(void)
   }
   else
   {
-    Error_Handler();
+    Error_Handler(false, ERR_BSP_UART, ERR_TYPE_SAVE);
   }
 }
 
