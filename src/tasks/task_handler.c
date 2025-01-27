@@ -1,9 +1,12 @@
+#include <stddef.h>
+
 #include "task_handler.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 #include "FreeRTOSConfig.h"
 
+#include "error.h"
 #include "media_task.h"
 #include "motor_task.h"
 #include "wdog_task.h"
@@ -21,6 +24,10 @@ void TaskHandler_Init(void)
               tskIDLE_PRIORITY + MEDIA_TASK_PRIORITY, // Task priority
               gbl_sStackMedia,
               &gbl_sTCBMedia );
+  if(gbl_sMediaTaskHandle == NULL)
+  {
+    Error_Handler(true, ERR_OS_MEDIA_TASK, ERR_TYPE_INIT);
+  }
 
   // Create MOTOR_DRIVING Task
   gbl_sMotorDrivingTaskHandle = xTaskCreateStatic(MotorDrivingTask,            // Task function
@@ -30,6 +37,10 @@ void TaskHandler_Init(void)
               tskIDLE_PRIORITY + MOTOR_TASK_PRIORITY,        // Task priority
               gbl_sStackMotor,
               &gbl_sTCBMotor );
+  if(gbl_sMotorDrivingTaskHandle == NULL)
+  {
+    Error_Handler(true, ERR_OS_MOTOR_TASK, ERR_TYPE_INIT);
+  }
 
   // Create WATCHDOG Task
   gbl_sWatchdogTaskHandle = xTaskCreateStatic(WatchdogTask,            // Task function
@@ -39,6 +50,10 @@ void TaskHandler_Init(void)
               tskIDLE_PRIORITY + WDOG_TASK_PRIORITY,        // Task priority
               gbl_sStackWdog,
               &gbl_sTCBWdog );
+  if(gbl_sWatchdogTaskHandle == NULL)
+  {
+    Error_Handler(true, ERR_OS_WDOG_TASK, ERR_TYPE_INIT);
+  }
 }
 
 /**

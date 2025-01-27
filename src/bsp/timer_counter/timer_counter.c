@@ -108,8 +108,9 @@ static void TimerCounter_PRV_InitDMA(void)
                           (uint32_t)gbl_au32PulsesDetected,
                           LL_DMA_GetDataTransferDirection(DMA1, LL_DMA_CHANNEL_2));
 
-  // Enable DMA interrupts for transfer complete and half-transfer
+  // Enable DMA interrupts for transfer complete
   LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_2);
+  LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_2);
 
   // Enable DMA Channel
   LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_2);

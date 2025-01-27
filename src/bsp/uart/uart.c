@@ -96,6 +96,7 @@ void Uart_Activate(void)
   /* Enable RXNE, TC interrupts */
   LL_LPUART_EnableIT_RXNE(LPUART1);
   LL_LPUART_EnableIT_TC(LPUART1);
+  LL_LPUART_EnableIT_ERROR(LPUART1);
 }
 
 /**
