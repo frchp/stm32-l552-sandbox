@@ -54,7 +54,7 @@ void Uart_Init(void)
     LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOG);
     LL_PWR_EnableVddIO2();
 
-    /**LPUART1 GPIO Configuration
+    /** LPUART1 GPIO Configuration
     PG7   ------> LPUART1_TX
     PG8   ------> LPUART1_RX
     */
