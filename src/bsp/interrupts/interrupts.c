@@ -79,10 +79,8 @@ void UsageFault_Handler(void)
   */
 void ADC1_2_IRQHandler(void)
 {
-  /* Check whether ADC group regular overrun caused the ADC interruption */
   if(LL_ADC_IsActiveFlag_OVR(ADC1))
   {
-    /* Clear flag ADC group regular overrun */
     LL_ADC_ClearFlag_OVR(ADC1);
 
     LL_ADC_DisableIT_OVR(ADC1);
@@ -94,20 +92,15 @@ void ADC1_2_IRQHandler(void)
   */
 void DMA1_Channel1_IRQHandler(void)
 {
-  /* Check whether DMA transfer complete caused the DMA interruption */
   if(LL_DMA_IsActiveFlag_TC1(DMA1))
   {
-    /* Clear flag DMA transfer complete */
     LL_DMA_ClearFlag_TC1(DMA1);
 
-    /* Call interruption treatment function */
     Adc_Notify();
   }
 
-  /* Check whether DMA transfer error caused the DMA interruption */
   if(LL_DMA_IsActiveFlag_TE1(DMA1))
   {
-    /* Clear flag DMA transfer error */
     LL_DMA_ClearFlag_TE1(DMA1);
 
     Error_Handler(false, ERR_BSP_DMA_CH1, ERR_TYPE_IRQ);
@@ -124,8 +117,20 @@ void LPUART1_IRQHandler(void)
 
   if(LL_LPUART_IsActiveFlag_TC(LPUART1))
   {
-    Uart_TxByteComplete();
     LL_LPUART_ClearFlag_TC(LPUART1);
+
+    Uart_TxByteComplete();
+  }
+
+  if(LL_LPUART_IsActiveFlag_ORE(LPUART1)
+   || LL_LPUART_IsActiveFlag_PE(LPUART1)
+   || LL_LPUART_IsActiveFlag_FE(LPUART1))
+  {
+    LL_LPUART_ClearFlag_ORE(LPUART1);
+    LL_LPUART_ClearFlag_PE(LPUART1);
+    LL_LPUART_ClearFlag_FE(LPUART1);
+
+    Error_Handler(false, ERR_BSP_UART, ERR_TYPE_IRQ);
   }
 }
 
@@ -133,9 +138,16 @@ void DMA1_Channel2_IRQHandler(void)
 {
   if (LL_DMA_IsActiveFlag_TC2(DMA1))
   {
-    LL_DMA_ClearFlag_TC2(DMA1); // Clear transfer complete flag
+    LL_DMA_ClearFlag_TC2(DMA1);
 
     TimerCounter_AllPulsesDetected();
+  }
+
+  if(LL_DMA_IsActiveFlag_TE2(DMA1))
+  {
+    LL_DMA_ClearFlag_TE2(DMA1);
+
+    Error_Handler(false, ERR_BSP_DMA_CH2, ERR_TYPE_IRQ);
   }
 }
 
