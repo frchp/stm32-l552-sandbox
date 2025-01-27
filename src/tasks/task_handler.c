@@ -10,6 +10,7 @@
 #include "media_task.h"
 #include "motor_task.h"
 #include "wdog_task.h"
+#include "supervisor_task.h"
 
 /**
   @brief Setup OS tasks.
@@ -53,6 +54,19 @@ void TaskHandler_Init(void)
   if(gbl_sWatchdogTaskHandle == NULL)
   {
     Error_Handler(true, ERR_OS_WDOG_TASK, ERR_TYPE_INIT);
+  }
+
+  // Create SUPERVISOR Task
+  gbl_sSupervisorTaskHandle = xTaskCreateStatic(SupervisorTask,            // Task function
+              "SUPERVISOR",             // Task name
+              SUPERVISOR_TASK_STACK_SIZE,                         // Stack size in words
+              NULL,                        // Task parameter
+              tskIDLE_PRIORITY + SUPERVISOR_TASK_PRIORITY,        // Task priority
+              gbl_sStackSupervisor,
+              &gbl_sTCBSupervisor );
+  if(gbl_sSupervisorTaskHandle == NULL)
+  {
+    Error_Handler(true, ERR_OS_SUPERVISOR_TASK, ERR_TYPE_INIT);
   }
 }
 

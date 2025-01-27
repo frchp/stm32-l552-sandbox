@@ -5,7 +5,7 @@
 #include "task.h"
 
 /* Motor task configuration */
-#define MOTOR_TASK_PRIORITY     (2u)
+#define MOTOR_TASK_PRIORITY     (4u)
 #define MOTOR_TASK_STACK_SIZE   (128u)
 
 extern TaskHandle_t gbl_sMotorDrivingTaskHandle;
@@ -15,6 +15,7 @@ extern StaticTask_t gbl_sTCBMotor;
 /* Events */
 #define MTR_EVT_GO       (1u << 0u)
 #define MTR_EVT_STOP     (1u << 1u)
+#define MTR_EVT_ISALIVE  (1u << 2u)
 
 void MotorDrivingTask_Notify(uint32_t arg_u32Evt);
 

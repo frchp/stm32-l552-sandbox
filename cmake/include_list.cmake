@@ -25,6 +25,7 @@ ${PROJ_PATH}/src/tasks
 ${PROJ_PATH}/src/tasks/idle
 ${PROJ_PATH}/src/tasks/media
 ${PROJ_PATH}/src/tasks/motor
+${PROJ_PATH}/src/tasks/supervisor
 ${PROJ_PATH}/src/tasks/watchdog
 # vendor
 ${PROJ_PATH}/vendor/Drivers/CMSIS/Core/Include

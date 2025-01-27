@@ -9,6 +9,7 @@
 
 // Task specific application
 #include "motor_controller.h"
+#include "supervisor_task.h"
 
 /* Motor task parameters */
 TaskHandle_t gbl_sMotorDrivingTaskHandle;
@@ -105,6 +106,11 @@ void MotorDrivingTask(void *arg_pvParameters)
       if( ( u32Notifications & MTR_EVT_STOP ) != 0 )
       {
         MotorController_Stop();
+      }
+
+      if( ( u32Notifications & MTR_EVT_ISALIVE ) != 0 )
+      {
+        SupervisorTask_MotorTaskIsAlive();
       }
     }
     else
