@@ -39,7 +39,7 @@ static const uint32_t gbl_cau32AdcRankCfg[ADC_NB_RANKS] = {
 };
 
 #define ADC_DELAY_CALIB_ENABLE_CPU_CYCLES  (LL_ADC_DELAY_CALIB_ENABLE_ADC_CYCLES * 32u)
-#define TIMER_FREQUENCY (200u)
+#define TIMER_FREQUENCY_HZ (200u)
 #define TIMER_FREQUENCY_RANGE_MIN      (1UL)
 #define TIMER_PRESCALER_MAX_VALUE      (0xFFFF - 1UL)
 
@@ -110,11 +110,6 @@ void Adc_Activate(void)
     LL_ADC_EnableInternalRegulator(ADC1);
 
     /* Delay for ADC internal voltage regulator stabilization.                */
-    /* Compute number of CPU cycles to wait for, from delay in us.            */
-    /* Note: Variable divided by 2 to compensate partially                    */
-    /*       CPU processing cycles (depends on compilation optimization).     */
-    /* Note: If system core clock frequency is below 200kHz, wait time        */
-    /*       is only a few CPU processing cycles.                             */
     cpu_delay_WaitFor(LL_ADC_DELAY_INTERNAL_REGUL_STAB_US);
 
     /* Run ADC self calibration */
@@ -125,8 +120,6 @@ void Adc_Activate(void)
     }
 
     /* Delay between ADC end of calibration and ADC enable.                   */
-    /* Note: Variable divided by 2 to compensate partially                    */
-    /*       CPU processing cycles (depends on compilation optimization).     */
     cpu_delay_WaitFor(ADC_DELAY_CALIB_ENABLE_CPU_CYCLES);
 
     /* Enable ADC */
@@ -231,23 +224,7 @@ static void Adc_PRV_InitSamplingTimer(void)
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM2);
 
-  /*## Configuration of NVIC #################################################*/
-  /* Note: In this example, timer interrupts are not activated.               */
-  /*       If needed, timer interruption at each time base period is          */
-  /*       possible.                                                          */
-  /*       Refer to timer examples.                                           */
-  /* Configuration of timer as time base:                                     */ 
-  /* Caution: Computation of frequency is done for a timer instance on APB1   */
-  /*          (clocked by PCLK1)                                              */
-  /* Timer frequency is configured from the following constants:              */
-  /* - TIMER_FREQUENCY: timer frequency (unit: Hz).                           */
-  /* - TIMER_FREQUENCY_RANGE_MIN: timer minimum frequency possible            */
-  /*   (unit: Hz).                                                            */
-  /* Note: Refer to comments at these literals definition for more details.   */
-
   /* Retrieve timer clock source frequency */
-  /* If APB1 prescaler is different of 1, timers have a factor x2 on their    */
-  /* clock source.                                                            */
   if (LL_RCC_GetAPB1Prescaler() == LL_RCC_APB1_DIV_1)
   {
     loc_u32TimerClockFreq = __LL_RCC_CALC_PCLK1_FREQ(SystemCoreClock, LL_RCC_GetAPB1Prescaler());
@@ -259,9 +236,9 @@ static void Adc_PRV_InitSamplingTimer(void)
 
   /* Timer prescaler calculation */
   /* (computation for timer 16 bits, additional + 1 to round the prescaler up) */
-  loc_u32TimerPrescaler = ((loc_u32TimerClockFreq / (TIMER_PRESCALER_MAX_VALUE * TIMER_FREQUENCY_RANGE_MIN)) +1);
+  loc_u32TimerPrescaler = ((loc_u32TimerClockFreq / (TIMER_PRESCALER_MAX_VALUE * TIMER_FREQUENCY_RANGE_MIN)) + 1);
   /* Timer reload calculation */
-  loc_u32TimerReload = (loc_u32TimerClockFreq / (loc_u32TimerPrescaler * TIMER_FREQUENCY));
+  loc_u32TimerReload = (loc_u32TimerClockFreq / (loc_u32TimerPrescaler * TIMER_FREQUENCY_HZ));
   LL_TIM_SetClockDivision(TIM2, LL_TIM_CLOCKDIVISION_DIV4);
   LL_TIM_SetPrescaler(TIM2, (loc_u32TimerPrescaler - 1));
   LL_TIM_SetAutoReload(TIM2, (loc_u32TimerReload - 1));
