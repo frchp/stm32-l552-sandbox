@@ -32,14 +32,6 @@ const uint32_t MSIRangeTable[16] = {100000U,   200000U,   400000U,   800000U,  1
                                     4000000U, 8000000U, 16000000U, 24000000U, 32000000U, 48000000U, \
                                     0U,       0U,       0U,        0U};
 
-const SignalConfig_t gbl_sAdcSignalConfig[ADC_NB_SIGNALS] =
-{
-  {
-    BOARD_ADC_MTR_CURRENT_CHANNEL,
-    NULL
-  }
-};
-
 #define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
                                                                  3 bits for subpriority */
 #define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
@@ -49,10 +41,8 @@ const SignalConfig_t gbl_sAdcSignalConfig[ADC_NB_SIGNALS] =
 #define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
                                                                  0 bit  for subpriority */
 
-static void system_PRV_InitGpio(void);
-
 /**
-  @brief Setup the BSP.
+  @brief Setup the system.
  */
 void SystemInit (void)
 {
@@ -134,36 +124,9 @@ void SystemCoreClockUpdate(void)
 }
 
 /**
-  @brief Setup the BSP.
+  @brief Setup the clock tree and system.
  */
-void Bsp_Init (void)
-{
-  Bsp_InitClock();
-
-  system_PRV_InitGpio();
-
-  Adc_Init(gbl_sAdcSignalConfig);
-  TimerCounter_Init();
-  TimerPwm_Init();
-  Uart_Init();
-}
-
-/**
-  @brief Setup the BSP.
- */
-void Bsp_Activate (void)
-{
-  Adc_Activate();
-  TimerCounter_Activate();
-  TimerPwm_Activate();
-  Uart_Activate();
-  Watchdog_Activate(); // Last to be activated, to not trigger reset during Init
-}
-
-/**
-  @brief Setup the clock tree.
- */
-void Bsp_InitClock(void)
+void system_InitSystem(void)
 {
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
@@ -209,7 +172,7 @@ void Bsp_InitClock(void)
   LL_ICACHE_Enable();
 }
 
-static void system_PRV_InitGpio(void)
+void system_InitGpio(void)
 {
   static bool loc_bInitialized = false;
   if(!loc_bInitialized)

@@ -1,9 +1,6 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
-#include <stdint.h>
-#include "cmsis_compiler.h"
-
 /**
   @brief Setup the microcontroller system.
 
@@ -17,39 +14,10 @@ void SystemInit (void);
 void SystemCoreClockUpdate(void);
 
 /**
-  @brief Setup the BSP.
+  @brief Setup the clock tree and system.
  */
-void Bsp_Init (void);
+void system_InitSystem(void);
 
-/**
-  @brief Setup the BSP.
- */
-void Bsp_Activate (void);
-
-/**
-  @brief Setup the clock tree.
- */
-void Bsp_InitClock(void);
-
-/**
-  @brief Enter critical section.
- */
-static inline uint32_t Bsp_EnterCritical(void)
-{
-  uint32_t loc_u32irqState = __get_PRIMASK();
-  __disable_irq();
-  return loc_u32irqState;
-}
-
-/**
-  @brief Exit critical section.
- */
-static inline void Bsp_ExitCritical(uint32_t arg_u32irqState)
-{
-  if (arg_u32irqState == 0U) {
-    __enable_irq();
-  }
-}
-
+void system_InitGpio(void);
 
 #endif // _SYSTEM_H_

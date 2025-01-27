@@ -1,8 +1,6 @@
 #include <stdint.h>
 
-#include "error.h"
-#include "system.h"
-#include "watchdog.h"
+#include "bsp.h"
 #include "app.h"
 #include "task_handler.h"
 

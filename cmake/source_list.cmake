@@ -10,6 +10,7 @@ ${PROJ_PATH}/src/app/intensity_sensor/intensity_sensor.c
 ${PROJ_PATH}/src/app/motor_controller/motor_controller.c
 ${PROJ_PATH}/src/app/order_handler/order_handler.c
 ${PROJ_PATH}/src/app/speed_sensor/speed_sensor.c
+${PROJ_PATH}/src/bsp/bsp.c
 ${PROJ_PATH}/src/bsp/adc/adc.c
 ${PROJ_PATH}/src/bsp/interrupts/interrupts.c
 ${PROJ_PATH}/src/bsp/system/system.c
