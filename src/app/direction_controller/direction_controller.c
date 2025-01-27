@@ -1,7 +1,7 @@
 #include "direction_controller.h"
 
 #include "board.h"
-#include "stm32l5xx_ll_gpio.h"
+#include "gpio.h"
 
 static MotorDirection_t gbl_eCurrentDirection;
 
@@ -12,7 +12,7 @@ void DirectionController_Init(void)
 {
   // GPIO is instanced in system.c
 
-  LL_GPIO_ResetOutputPin(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN);
+  Gpio_Set(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN, false);
   gbl_eCurrentDirection = MTR_DIR_CCW;
 }
 
@@ -21,7 +21,7 @@ void DirectionController_Init(void)
  */
 void DirectionController_GoCW(void)
 {
-  LL_GPIO_SetOutputPin(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN);
+  Gpio_Set(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN, true);
   gbl_eCurrentDirection = MTR_DIR_CW;
 }
 
@@ -30,6 +30,6 @@ void DirectionController_GoCW(void)
  */
 void DirectionController_GoCCW(void)
 {
-  LL_GPIO_ResetOutputPin(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN);
+  Gpio_Set(BOARD_GPIO_MTR_DIR_PORT, BOARD_GPIO_MTR_DIR_PIN, false);
   gbl_eCurrentDirection = MTR_DIR_CCW;
 }

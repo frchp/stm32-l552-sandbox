@@ -5,6 +5,7 @@
 #include "system.h"
 #include "adc.h"
 #include "adc_config.h"
+#include "gpio.h"
 #include "board.h"
 #include "timer_counter.h"
 #include "timer_pwm.h"
@@ -26,7 +27,7 @@ void Bsp_Init (void)
 {
   system_InitSystem();
 
-  system_InitGpio();
+  Gpio_Init();
 
   Adc_Init(gbl_sAdcSignalConfig);
   TimerCounter_Init();
