@@ -22,3 +22,15 @@ void Clocks_Enable_AHB2_GRP1(uint32_t arg_u32Msk)
   /* Delay after an RCC peripheral clock enabling */
   (void)READ_BIT(RCC->AHB2ENR, arg_u32Msk);
 }
+
+/**
+  @brief Set LPUART source :
+    0UL                             PCLK1 clock used as LPUART1 clock source
+    RCC_CCIPR1_LPUART1SEL_0         SYSCLK clock used as LPUART1 clock source
+    RCC_CCIPR1_LPUART1SEL_1         HSI clock used as LPUART1 clock source
+    RCC_CCIPR1_LPUART1SEL           LSE clock used as LPUART1 clock source
+*/
+void Clocks_SetLPUartClockSource(uint32_t arg_u32Src)
+{
+  MODIFY_REG(RCC->CCIPR1, RCC_CCIPR1_LPUART1SEL, arg_u32Src);
+}

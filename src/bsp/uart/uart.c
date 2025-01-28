@@ -12,6 +12,7 @@
 #include "uart.h"
 #include "uart_config.h"
 
+#include "clocks.h"
 #include "cpu_delay.h"
 #include "interrupts.h"
 #include "error.h"
@@ -44,27 +45,13 @@ void Uart_Init(void)
     }
 
     LL_LPUART_InitTypeDef LPUART_InitStruct = {0};
-    LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-    LL_RCC_SetLPUARTClockSource(LL_RCC_LPUART1_CLKSOURCE_PCLK1);
+    Clocks_SetLPUartClockSource(0ul /* PCLK */);
 
     /* Peripheral clock enable */
     LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_LPUART1);
 
-    LL_AHB2_GRP1_EnableClock(LL_AHB2_GRP1_PERIPH_GPIOG);
     LL_PWR_EnableVddIO2();
-
-    /** LPUART1 GPIO Configuration
-    PG7   ------> LPUART1_TX
-    PG8   ------> LPUART1_RX
-    */
-    GPIO_InitStruct.Pin = LL_GPIO_PIN_7|LL_GPIO_PIN_8;
-    GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-    GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
-    GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-    GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
-    GPIO_InitStruct.Alternate = LL_GPIO_AF_8;
-    LL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
     Interrupts_Enable(INT_UART);
 
