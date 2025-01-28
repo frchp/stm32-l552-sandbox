@@ -2,11 +2,9 @@
 
 #include "watchdog.h"
 
+#include "stm32l552xx.h"
 #include "reg_macro.h"
 #include "clocks.h"
-
-#include "stm32l5xx_ll_iwdg.h"
-#include "stm32l5xx_ll_rcc.h"
 
 #define IWDG_KEY_RELOAD                 0x0000AAAAU
 #define IWDG_KEY_ENABLE                 0x0000CCCCU
@@ -50,5 +48,5 @@ void Watchdog_Activate(void)
  */
 void Watchdog_Refresh(void)
 {
-  WRITE_REG(IWDG->KR, LL_IWDG_KEY_RELOAD);
+  WRITE_REG(IWDG->KR, IWDG_KEY_RELOAD);
 }
