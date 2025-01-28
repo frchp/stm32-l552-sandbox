@@ -9,6 +9,7 @@ ${PROJ_PATH}/src/app/order_handler
 ${PROJ_PATH}/src/app/speed_sensor
 ${PROJ_PATH}/src/bsp
 ${PROJ_PATH}/src/bsp/adc
+${PROJ_PATH}/src/bsp/clocks
 ${PROJ_PATH}/src/bsp/gpio
 ${PROJ_PATH}/src/bsp/interrupts
 ${PROJ_PATH}/src/bsp/system
@@ -16,6 +17,7 @@ ${PROJ_PATH}/src/bsp/timer_counter
 ${PROJ_PATH}/src/bsp/timer_pwm
 ${PROJ_PATH}/src/bsp/uart
 ${PROJ_PATH}/src/bsp/watchdog
+${PROJ_PATH}/src/utils
 ${PROJ_PATH}/src/utils/error
 ${PROJ_PATH}/src/utils/ring_buffer
 ${PROJ_PATH}/src
